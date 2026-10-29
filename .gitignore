@@ -1,0 +1,29 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+
+## Visual Studio cache & temporary files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Test results & code coverage
+TestResults/
+[Tt]est[Rr]esult*/
+*.coverage
+*.coveragexml
+
+## NuGet
+*.nupkg
+project.lock.json
+project.assets.json
+
+## Scratch and temporary images
+*.tmp
+*.log
+crop_user_box.png

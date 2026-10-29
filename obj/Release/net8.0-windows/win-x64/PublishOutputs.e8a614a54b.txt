@@ -1,2 +1,0 @@
-D:\IPScan\publish\framework-dependent\IPScan.pdb
-D:\IPScan\publish\framework-dependent\IPScan.exe

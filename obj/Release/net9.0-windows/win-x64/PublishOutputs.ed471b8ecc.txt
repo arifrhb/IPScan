@@ -1,3 +1,0 @@
-d:\IPScan\publish\framework-dependent\IPScan.pdb
-d:\IPScan\publish\framework-dependent\app.ico
-d:\IPScan\publish\framework-dependent\IPScan.exe
