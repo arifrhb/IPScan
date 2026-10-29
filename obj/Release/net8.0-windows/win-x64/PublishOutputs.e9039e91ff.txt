@@ -1,0 +1,2 @@
+D:\IPScan\publish\self-contained\IPScan.pdb
+D:\IPScan\publish\self-contained\IPScan.exe

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DefaultItemExcludes>$(DefaultItemExcludes);tests\**;tools\**</DefaultItemExcludes>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AssemblyTitle>IPScan - Standalone Network IP Scanner</AssemblyTitle>
+    <AssemblyProduct>IPScan</AssemblyProduct>
+    <AssemblyDescription>A lightweight, standalone desktop IP scanner for authorized network assessment and inventory.</AssemblyDescription>
+    <Company>IPScan Security Tools</Company>
+    <Authors>Arif Uddin</Authors>
+    <Copyright>Copyright © 2026 IPScan Contributors. All rights reserved.</Copyright>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <FileVersion>1.2.0.0</FileVersion>
+    <InformationalVersion>1.2.0 (Release Build)</InformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="app.ico" />
+    <Content Include="app.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MiniExcel" Version="1.46.0" />
+    <PackageReference Include="System.Management" Version="10.0.14" />
+  </ItemGroup>
+
+</Project>
