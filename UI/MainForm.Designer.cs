@@ -81,6 +81,7 @@ partial class MainForm
         pnlTop.Dock = DockStyle.Top;
         pnlTop.Height = 88;
         pnlTop.BackColor = SystemColors.Control;
+        pnlTop.TabIndex = 0;
 
         // Row 1: Clear "IP Range:" label, compact input wrapper on the right, and comfortable margins
         lblInputHeader.Location = new Point(25, 15);
@@ -92,6 +93,7 @@ partial class MainForm
         pnlInputWrapper.Location = new Point(110, 10);
         pnlInputWrapper.Size = new Size(360, 30);
         pnlInputWrapper.BackColor = Color.White;
+        pnlInputWrapper.TabIndex = 0;
 
         txtInput.Dock = DockStyle.None;
         txtInput.BorderStyle = BorderStyle.None;
@@ -100,12 +102,14 @@ partial class MainForm
         txtInput.Location = new Point(10, 5);
         txtInput.Width = 340;
         txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+        txtInput.TabIndex = 0;
         pnlInputWrapper.Controls.Add(txtInput);
 
         btnLoadFile.Location = new Point(480, 10);
         btnLoadFile.Size = new Size(85, 30);
         btnLoadFile.Text = "Upload";
         btnLoadFile.UseVisualStyleBackColor = true;
+        btnLoadFile.TabIndex = 1;
         btnLoadFile.Click += btnLoadFile_Click;
 
         lblTargetInfo.Location = new Point(575, 15);
@@ -122,30 +126,35 @@ partial class MainForm
         btnStart.FlatStyle = FlatStyle.Flat;
         btnStart.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
         btnStart.UseVisualStyleBackColor = false;
+        btnStart.TabIndex = 2;
         btnStart.Click += btnStart_Click;
 
         btnCancel.Location = new Point(121, 48);
         btnCancel.Size = new Size(82, 30);
         btnCancel.Text = "Stop (Esc)";
         btnCancel.UseVisualStyleBackColor = true;
+        btnCancel.TabIndex = 3;
         btnCancel.Click += btnCancel_Click;
 
         btnSettings.Location = new Point(209, 48);
         btnSettings.Size = new Size(75, 30);
         btnSettings.Text = "Settings";
         btnSettings.UseVisualStyleBackColor = true;
+        btnSettings.TabIndex = 4;
         btnSettings.Click += btnSettings_Click;
 
         btnExport.Location = new Point(290, 48);
         btnExport.Size = new Size(78, 30);
         btnExport.Text = "Export...";
         btnExport.UseVisualStyleBackColor = true;
+        btnExport.TabIndex = 5;
         btnExport.Click += btnExport_Click;
 
         btnAbout.Location = new Point(374, 48);
         btnAbout.Size = new Size(68, 30);
         btnAbout.Text = "About";
         btnAbout.UseVisualStyleBackColor = true;
+        btnAbout.TabIndex = 6;
         btnAbout.Click += btnAbout_Click;
 
         lblFilter.Location = new Point(458, 53);
@@ -158,6 +167,7 @@ partial class MainForm
         btnFilterAll.Text = "All";
         btnFilterAll.FlatStyle = FlatStyle.Flat;
         btnFilterAll.UseVisualStyleBackColor = true;
+        btnFilterAll.TabIndex = 7;
         btnFilterAll.Click += (s, e) => SetFilterMode(ResultFilterMode.Both);
 
         btnFilterOnline.Location = new Point(570, 48);
@@ -165,6 +175,7 @@ partial class MainForm
         btnFilterOnline.Text = "Online";
         btnFilterOnline.FlatStyle = FlatStyle.Flat;
         btnFilterOnline.UseVisualStyleBackColor = true;
+        btnFilterOnline.TabIndex = 8;
         btnFilterOnline.Click += (s, e) => SetFilterMode(ResultFilterMode.Online);
 
         btnFilterOffline.Location = new Point(644, 48);
@@ -172,6 +183,7 @@ partial class MainForm
         btnFilterOffline.Text = "Offline";
         btnFilterOffline.FlatStyle = FlatStyle.Flat;
         btnFilterOffline.UseVisualStyleBackColor = true;
+        btnFilterOffline.TabIndex = 9;
         btnFilterOffline.Click += (s, e) => SetFilterMode(ResultFilterMode.Offline);
 
         pnlTop.Controls.AddRange(new Control[] {
@@ -186,6 +198,7 @@ partial class MainForm
         pnlGridContainer.Dock = DockStyle.Fill;
         pnlGridContainer.Padding = new Padding(25, 2, 25, 8);
         pnlGridContainer.BackColor = SystemColors.Control;
+        pnlGridContainer.TabIndex = 1;
 
         // 
         // gridResults
@@ -194,6 +207,7 @@ partial class MainForm
         gridResults.BackgroundColor = Color.White;
         gridResults.BorderStyle = BorderStyle.FixedSingle;
         gridResults.GridColor = Color.FromArgb(230, 230, 230);
+        gridResults.TabIndex = 0;
         pnlGridContainer.Controls.Add(gridResults);
 
         // 

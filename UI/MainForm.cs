@@ -99,6 +99,8 @@ public partial class MainForm : Form
         var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         lblVersionStrip.Text = ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.2.0";
 
+        ActiveControl = txtInput;
+
         _elapsedTimer = new System.Windows.Forms.Timer { Interval = 500 };
         _elapsedTimer.Tick += (s, e) =>
         {
@@ -498,6 +500,9 @@ public partial class MainForm : Form
         LayoutInputBox();
         UpdateSortGlyphs();
         AdjustColumnWidths();
+        ActiveControl = txtInput;
+        txtInput.Focus();
+        txtInput.Select(txtInput.Text.Length, 0);
     }
 
     /// <summary>
