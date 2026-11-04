@@ -823,9 +823,24 @@ public partial class MainForm : Form
             {
                 gridResults.ClearSelection();
                 gridResults.Rows[hit.RowIndex].Selected = true;
+                UpdateContextMenuLabels();
                 contextMenu.Show(gridResults, e.Location);
             }
         }
+    }
+
+    private void ContextMenu_Opening(object? sender, CancelEventArgs e)
+    {
+        UpdateContextMenuLabels();
+    }
+
+    private void UpdateContextMenuLabels()
+    {
+        var res = GetSelectedResult();
+        string ipText = res?.IpString ?? "<IP>";
+        menuHttp.Text = $"Open HTTP (http://{ipText})";
+        menuHttps.Text = $"Open HTTPS (https://{ipText})";
+        menuExplorer.Text = $@"Open Shared Folders (\\{ipText}\)";
     }
 
     private ScanResult? GetSelectedResult()
