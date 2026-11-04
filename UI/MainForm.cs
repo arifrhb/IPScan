@@ -30,8 +30,35 @@ public partial class MainForm : Form
     {
         InitializeComponent();
         LoadAppIcon();
+        ApplyContextMenuIcons();
         ConfigureGrid();
         InitializeState();
+    }
+
+    public ContextMenuStrip ResultContextMenu => contextMenu;
+    public ToolStripMenuItem MenuHttp => menuHttp;
+    public ToolStripMenuItem MenuHttps => menuHttps;
+    public ToolStripMenuItem MenuVnc => menuVnc;
+    public ToolStripMenuItem MenuExplorer => menuExplorer;
+    public ToolStripMenuItem MenuCopyIp => menuCopyIp;
+    public ToolStripMenuItem MenuCopyRow => menuCopyRow;
+
+    private void ApplyContextMenuIcons()
+    {
+        int iconSize = DeviceDpi >= 192 ? 32 : (DeviceDpi >= 144 ? 24 : (DeviceDpi >= 120 ? 20 : 16));
+        contextMenu.ImageScalingSize = new Size(iconSize, iconSize);
+        menuHttp.Image = MenuIconHelper.CreateHttpIcon(iconSize);
+        menuHttps.Image = MenuIconHelper.CreateHttpsIcon(iconSize);
+        menuVnc.Image = MenuIconHelper.CreateVncIcon(iconSize);
+        menuExplorer.Image = MenuIconHelper.CreateSharedFolderIcon(iconSize);
+        menuCopyIp.Image = MenuIconHelper.CreateCopyIpIcon(iconSize);
+        menuCopyRow.Image = MenuIconHelper.CreateCopyRowDetailsIcon(iconSize);
+    }
+
+    protected override void OnDpiChanged(DpiChangedEventArgs e)
+    {
+        base.OnDpiChanged(e);
+        ApplyContextMenuIcons();
     }
 
     private void LoadAppIcon()
