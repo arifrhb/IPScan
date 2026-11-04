@@ -56,7 +56,7 @@ public partial class AboutDialog : Form
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = "https://github.com/arifrhb",
+                FileName = "https://github.com/arifrhb/IPScan/releases",
                 UseShellExecute = true
             });
         }

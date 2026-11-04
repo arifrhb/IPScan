@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+using System.Windows.Forms;
 
 namespace IPScan.Services.External;
 
@@ -63,49 +65,138 @@ public static class ShortcutService
     }
 
     /// <summary>
-    /// Creates a desktop shortcut and attempts to pin the application to the Windows Taskbar.
+    /// Creates a desktop shortcut pointing to the application.
     /// </summary>
-    public static ShortcutResult CreateShortcutAndPinToTaskbar(string? customTargetExe = null)
+    public static string CreateDesktopShortcut(
+        string? customTargetExe = null,
+        string? customWorkingDir = null,
+        string? customIconLocation = null)
     {
-        string targetExe = customTargetExe ?? Environment.ProcessPath ?? AppDomain.CurrentDomain.FriendlyName;
-        if (string.IsNullOrWhiteSpace(targetExe) || !File.Exists(targetExe))
+        string? targetExe = customTargetExe;
+        if (string.IsNullOrWhiteSpace(targetExe))
         {
-            // In unit test or development scenarios, fallback to base directory exe
+            try
+            {
+                targetExe = Application.ExecutablePath;
+            }
+            catch
+            {
+                // Fallback
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(targetExe) || !File.Exists(targetExe) || targetExe.EndsWith("testhost.exe", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                targetExe = Process.GetCurrentProcess().MainModule?.FileName;
+            }
+            catch
+            {
+                // Fallback
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(targetExe) || !File.Exists(targetExe) || targetExe.EndsWith("testhost.exe", StringComparison.OrdinalIgnoreCase))
+        {
             string fallback = Path.Combine(AppContext.BaseDirectory, "IPScan.exe");
             if (File.Exists(fallback))
             {
                 targetExe = fallback;
             }
+            else
+            {
+                targetExe = Environment.ProcessPath ?? AppDomain.CurrentDomain.FriendlyName;
+            }
         }
 
-        string workingDir = Path.GetDirectoryName(targetExe) ?? AppContext.BaseDirectory;
+        if (targetExe != null && targetExe.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+        {
+            string exeCandidate = Path.ChangeExtension(targetExe, ".exe");
+            if (File.Exists(exeCandidate))
+            {
+                targetExe = exeCandidate;
+            }
+        }
+
+        string? workingDir = customWorkingDir;
+        if (string.IsNullOrWhiteSpace(workingDir))
+        {
+            try
+            {
+                workingDir = Application.StartupPath;
+            }
+            catch
+            {
+                // Fallback
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(workingDir) || !Directory.Exists(workingDir))
+        {
+            workingDir = Path.GetDirectoryName(targetExe) ?? AppContext.BaseDirectory;
+        }
+
         string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         string desktopShortcutPath = Path.Combine(desktopDir, DefaultShortcutName);
 
-        bool desktopSuccess = false;
+        string resolvedTarget = targetExe ?? Path.Combine(AppContext.BaseDirectory, "IPScan.exe");
+        string iconLocation = customIconLocation ?? resolvedTarget;
+        int iconIndex = 0;
+        string looseIco = Path.Combine(workingDir, "app.ico");
+        if (!File.Exists(iconLocation) && File.Exists(looseIco))
+        {
+            iconLocation = looseIco;
+            iconIndex = 0;
+        }
+
+        CreateShortcutFile(desktopShortcutPath, resolvedTarget, workingDir, DefaultDescription, iconLocation, iconIndex);
+        return desktopShortcutPath;
+    }
+
+    /// <summary>
+    /// Creates a desktop shortcut and attempts to pin the application to the Windows Taskbar.
+    /// </summary>
+    public static ShortcutResult CreateShortcutAndPinToTaskbar(string? customTargetExe = null)
+    {
         try
         {
-            CreateShortcutFile(desktopShortcutPath, targetExe, workingDir, DefaultDescription);
-            desktopSuccess = File.Exists(desktopShortcutPath);
+            string desktopShortcutPath = CreateDesktopShortcut(customTargetExe);
+            bool desktopSuccess = File.Exists(desktopShortcutPath);
+
+            string targetExe = customTargetExe ?? Application.ExecutablePath;
+            if (string.IsNullOrWhiteSpace(targetExe) || !File.Exists(targetExe))
+            {
+                targetExe = Path.Combine(AppContext.BaseDirectory, "IPScan.exe");
+            }
+            string workingDir = Path.GetDirectoryName(targetExe) ?? AppContext.BaseDirectory;
+
+            bool taskbarSuccess = TryPinToTaskbar(desktopShortcutPath, targetExe, workingDir);
+
+            string message = taskbarSuccess
+                ? "Desktop shortcut created successfully and pinned to the taskbar!"
+                : "Desktop shortcut created successfully! (To pin to taskbar on Windows 11, right-click the Desktop shortcut or the running taskbar icon and click 'Pin to taskbar').";
+
+            return new ShortcutResult(desktopSuccess, desktopShortcutPath, taskbarSuccess, message);
         }
         catch (Exception ex)
         {
+            string desktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            string desktopShortcutPath = Path.Combine(desktopDir, DefaultShortcutName);
             return new ShortcutResult(false, desktopShortcutPath, false, $"Failed to create desktop shortcut: {ex.Message}");
         }
-
-        bool taskbarSuccess = TryPinToTaskbar(desktopShortcutPath, targetExe, workingDir);
-
-        string message = taskbarSuccess
-            ? "Desktop shortcut created successfully and pinned to the taskbar!"
-            : "Desktop shortcut created successfully! (To pin to taskbar on Windows 11, right-click the Desktop shortcut or the running taskbar icon and click 'Pin to taskbar').";
-
-        return new ShortcutResult(desktopSuccess, desktopShortcutPath, taskbarSuccess, message);
     }
 
     /// <summary>
     /// Writes a Windows .lnk shortcut file using COM IShellLinkW or WScript.Shell.
     /// </summary>
-    public static void CreateShortcutFile(string shortcutPath, string targetPath, string workingDir, string description = DefaultDescription)
+    public static void CreateShortcutFile(
+        string shortcutPath,
+        string targetPath,
+        string workingDir,
+        string description = DefaultDescription,
+        string? iconLocation = null,
+        int iconIndex = 0)
     {
         string? dir = Path.GetDirectoryName(shortcutPath);
         if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
@@ -113,21 +204,28 @@ public static class ShortcutService
             Directory.CreateDirectory(dir);
         }
 
+        string effectiveIconPath = iconLocation ?? targetPath;
+        Exception? primaryException = null;
+
         try
         {
             var link = (IShellLinkW)new ShellLinkClass();
             link.SetPath(targetPath);
             link.SetWorkingDirectory(workingDir);
             link.SetDescription(description);
-            link.SetIconLocation(targetPath, 0);
+            link.SetIconLocation(effectiveIconPath, iconIndex);
 
             var file = (IPersistFile)link;
             file.Save(shortcutPath, true);
             return;
         }
-        catch
+        catch (UnauthorizedAccessException)
         {
-            // Fallback to WScript.Shell
+            throw;
+        }
+        catch (Exception ex)
+        {
+            primaryException = ex;
         }
 
         try
@@ -140,17 +238,53 @@ public static class ShortcutService
                 shortcut.TargetPath = targetPath;
                 shortcut.WorkingDirectory = workingDir;
                 shortcut.Description = description;
-                shortcut.IconLocation = targetPath + ",0";
+                shortcut.IconLocation = $"{effectiveIconPath},{iconIndex}";
                 shortcut.Save();
                 return;
             }
         }
-        catch
+        catch (UnauthorizedAccessException)
         {
-            // Both methods failed, rethrow
+            throw;
+        }
+        catch (COMException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            if (primaryException is COMException) throw primaryException;
+            throw new InvalidOperationException("Could not create shortcut using native ShellLink or WScript.Shell COM interfaces.", ex);
+        }
+
+        if (primaryException != null)
+        {
+            if (primaryException is COMException) throw primaryException;
+            throw new InvalidOperationException("Could not create shortcut using native ShellLink.", primaryException);
         }
 
         throw new InvalidOperationException("Could not create shortcut using native ShellLink or WScript.Shell COM interfaces.");
+    }
+
+    /// <summary>
+    /// Reads properties of an existing .lnk shortcut file.
+    /// </summary>
+    public static (string TargetPath, string WorkingDirectory, string IconLocation, int IconIndex) ReadShortcutFile(string shortcutPath)
+    {
+        var link = (IShellLinkW)new ShellLinkClass();
+        var file = (IPersistFile)link;
+        file.Load(shortcutPath, 0);
+
+        var targetSb = new StringBuilder(260);
+        link.GetPath(targetSb, targetSb.Capacity, IntPtr.Zero, 0);
+
+        var dirSb = new StringBuilder(260);
+        link.GetWorkingDirectory(dirSb, dirSb.Capacity);
+
+        var iconSb = new StringBuilder(260);
+        link.GetIconLocation(iconSb, iconSb.Capacity, out int iconIndex);
+
+        return (targetSb.ToString(), dirSb.ToString(), iconSb.ToString(), iconIndex);
     }
 
     /// <summary>

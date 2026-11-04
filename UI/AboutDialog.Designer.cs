@@ -70,7 +70,7 @@ partial class AboutDialog
         lblDeveloper.Location = new Point(25, 95);
         lblDeveloper.Size = new Size(420, 20);
         lblDeveloper.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
-        lblDeveloper.Text = "Developer: Md. Arif Uddin (IPScan Security Tools)";
+        lblDeveloper.Text = "Developer: Md. Arif Uddin";
 
         lblCopyright.Location = new Point(25, 118);
         lblCopyright.Size = new Size(420, 20);
@@ -98,7 +98,7 @@ partial class AboutDialog
 
         lnkGitHub.Location = new Point(25, 270);
         lnkGitHub.Size = new Size(160, 22);
-        lnkGitHub.Text = "Project Documentation";
+        lnkGitHub.Text = "Github";
         lnkGitHub.LinkClicked += lnkGitHub_LinkClicked;
 
         btnClose.Location = new Point(345, 265);

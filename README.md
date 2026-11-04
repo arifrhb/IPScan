@@ -31,7 +31,7 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
   - Bulletproof WMI safeguard: validates remote target UNC paths and strictly rejects Windows native fallback to `\\.\root\cimv2` (localhost) on remote queries.
   - NetBIOS `<03> Unique` registered username fallback for legacy Windows workstations.
 - **Non-Invasive**: No stealth, persistence, credential guessing, exploit payloads, or antivirus evasion.
-- **Embedded Icon & Version Metadata**: Multi-resolution Windows icon (`app.ico` covering 256x256, 48x48, 32x32, 16x16) embedded both as PE native resource (Desktop/File Explorer) and .NET manifest resource (`AppIconHelper`) for the Taskbar and Titlebar. Full PE assembly metadata (Company, Description, Copyright, Version `1.2.0`).
+- **Embedded Icon & Version Metadata**: Multi-resolution Windows icon (`app.ico` covering 256x256, 48x48, 32x32, 16x16) embedded both as PE native resource (Desktop/File Explorer) and .NET manifest resource (`AppIconHelper`) for the Taskbar and Titlebar. Full PE assembly metadata (Company, Description, Copyright, Version `1.2.1`).
 - **About Dialog**: Dedicated About dialog (`AboutDialog.cs`) displaying dynamic assembly version, runtime environment, developer info, and authorized-use policies.
 - **Filter View Options (Online / Offline / Both)**:
   - Top-bar dropdown filter to instantly toggle between **Both**, **Online**, and **Offline** views.

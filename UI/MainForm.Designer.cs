@@ -13,6 +13,7 @@ partial class MainForm
     private Button btnSettings = null!;
     private Button btnExport = null!;
     private Button btnAbout = null!;
+    private Button btnShortcut = null!;
     private Label lblTargetInfo = null!;
     private Label lblFilter = null!;
     private Button btnFilterAll = null!;
@@ -26,6 +27,7 @@ partial class MainForm
     private ToolStripStatusLabel lblElapsed = null!;
     private ToolStripStatusLabel lblVersionStrip = null!;
     private ContextMenuStrip contextMenu = null!;
+    private ToolTip toolTip = null!;
 
     protected override void Dispose(bool disposing)
     {
@@ -39,6 +41,7 @@ partial class MainForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        toolTip = new ToolTip(components);
 
         var pnlTop = new Panel();
         var lblInputHeader = new Label();
@@ -52,6 +55,7 @@ partial class MainForm
         btnSettings = new Button();
         btnExport = new Button();
         btnAbout = new Button();
+        btnShortcut = new Button();
         lblTargetInfo = new Label();
 
         btnFilterAll = new Button();
@@ -157,38 +161,46 @@ partial class MainForm
         btnAbout.TabIndex = 6;
         btnAbout.Click += btnAbout_Click;
 
-        lblFilter.Location = new Point(458, 53);
+        btnShortcut.Location = new Point(448, 48);
+        btnShortcut.Size = new Size(75, 30);
+        btnShortcut.Text = "Shortcut";
+        btnShortcut.UseVisualStyleBackColor = true;
+        btnShortcut.TabIndex = 7;
+        btnShortcut.Click += btnShortcut_Click;
+        toolTip.SetToolTip(btnShortcut, "Create a Desktop shortcut");
+
+        lblFilter.Location = new Point(538, 53);
         lblFilter.Size = new Size(46, 20);
         lblFilter.Text = "Filter:";
         lblFilter.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
 
-        btnFilterAll.Location = new Point(506, 48);
+        btnFilterAll.Location = new Point(586, 48);
         btnFilterAll.Size = new Size(58, 30);
         btnFilterAll.Text = "All";
         btnFilterAll.FlatStyle = FlatStyle.Flat;
         btnFilterAll.UseVisualStyleBackColor = true;
-        btnFilterAll.TabIndex = 7;
+        btnFilterAll.TabIndex = 8;
         btnFilterAll.Click += (s, e) => SetFilterMode(ResultFilterMode.Both);
 
-        btnFilterOnline.Location = new Point(570, 48);
+        btnFilterOnline.Location = new Point(650, 48);
         btnFilterOnline.Size = new Size(68, 30);
         btnFilterOnline.Text = "Online";
         btnFilterOnline.FlatStyle = FlatStyle.Flat;
         btnFilterOnline.UseVisualStyleBackColor = true;
-        btnFilterOnline.TabIndex = 8;
+        btnFilterOnline.TabIndex = 9;
         btnFilterOnline.Click += (s, e) => SetFilterMode(ResultFilterMode.Online);
 
-        btnFilterOffline.Location = new Point(644, 48);
+        btnFilterOffline.Location = new Point(724, 48);
         btnFilterOffline.Size = new Size(68, 30);
         btnFilterOffline.Text = "Offline";
         btnFilterOffline.FlatStyle = FlatStyle.Flat;
         btnFilterOffline.UseVisualStyleBackColor = true;
-        btnFilterOffline.TabIndex = 9;
+        btnFilterOffline.TabIndex = 10;
         btnFilterOffline.Click += (s, e) => SetFilterMode(ResultFilterMode.Offline);
 
         pnlTop.Controls.AddRange(new Control[] {
             lblInputHeader, pnlInputWrapper, btnLoadFile, lblTargetInfo,
-            btnStart, btnCancel, btnSettings, btnExport, btnAbout,
+            btnStart, btnCancel, btnSettings, btnExport, btnAbout, btnShortcut,
             lblFilter, btnFilterAll, btnFilterOnline, btnFilterOffline
         });
 

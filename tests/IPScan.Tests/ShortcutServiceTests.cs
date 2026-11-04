@@ -58,6 +58,12 @@ public class ShortcutServiceTests
             Assert.NotNull(btnShortcut);
             Assert.Equal("Shortcut", btnShortcut.Text);
             Assert.True(btnShortcut.Visible);
+            Assert.Equal(30, btnShortcut.Height);
+
+            var toolTipField = typeof(MainForm).GetField("toolTip", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var toolTip = toolTipField?.GetValue(form) as ToolTip;
+            Assert.NotNull(toolTip);
+            Assert.Equal("Create a Desktop shortcut", toolTip.GetToolTip(btnShortcut));
 
             form.Close();
         });
@@ -74,13 +80,52 @@ public class ShortcutServiceTests
 
         try
         {
-            ShortcutService.CreateShortcutFile(tempLnk, tempTarget, tempDir, "Test description");
+            ShortcutService.CreateShortcutFile(tempLnk, tempTarget, tempDir, "Test description", tempTarget, 0);
             Assert.True(File.Exists(tempLnk), "Shortcut .lnk file should be created successfully.");
             var fi = new FileInfo(tempLnk);
             Assert.True(fi.Length > 0, "Created .lnk file should not be 0 bytes.");
+
+            var (target, workingDir, iconLoc, iconIdx) = ShortcutService.ReadShortcutFile(tempLnk);
+            Assert.Equal(tempTarget, target, ignoreCase: true);
+            Assert.Equal(tempDir, workingDir, ignoreCase: true);
+            Assert.Equal(tempTarget, iconLoc, ignoreCase: true);
+            Assert.Equal(0, iconIdx);
         }
         finally
         {
+            if (Directory.Exists(tempDir))
+            {
+                try { Directory.Delete(tempDir, true); } catch { }
+            }
+        }
+    }
+
+    [Fact]
+    public void CreateDesktopShortcut_Generates_Shortcut_With_Correct_Target_And_WorkingDir()
+    {
+        string tempDir = Path.Combine(Path.GetTempPath(), "IPScan_DesktopShortcutTests_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempDir);
+        string fakeExe = Path.Combine(tempDir, "IPScan.exe");
+        File.WriteAllText(fakeExe, "dummy");
+
+        string? createdLnk = null;
+        try
+        {
+            createdLnk = ShortcutService.CreateDesktopShortcut(fakeExe, tempDir);
+            Assert.True(File.Exists(createdLnk));
+            Assert.EndsWith(ShortcutService.DefaultShortcutName, createdLnk, StringComparison.OrdinalIgnoreCase);
+
+            var (target, workingDir, iconLoc, _) = ShortcutService.ReadShortcutFile(createdLnk);
+            Assert.Equal(fakeExe, target, ignoreCase: true);
+            Assert.Equal(tempDir, workingDir, ignoreCase: true);
+            Assert.Equal(fakeExe, iconLoc, ignoreCase: true);
+        }
+        finally
+        {
+            if (!string.IsNullOrEmpty(createdLnk) && File.Exists(createdLnk))
+            {
+                try { File.Delete(createdLnk); } catch { }
+            }
             if (Directory.Exists(tempDir))
             {
                 try { Directory.Delete(tempDir, true); } catch { }

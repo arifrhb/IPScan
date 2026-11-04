@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using IPScan.Models;
 using IPScan.Services.Export;
 using IPScan.Services.External;
@@ -97,7 +98,7 @@ public partial class MainForm : Form
         lblTargetInfo.Text = "0 targets";
 
         var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        lblVersionStrip.Text = ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.2.0";
+        lblVersionStrip.Text = ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.2.1";
 
         ActiveControl = txtInput;
 
@@ -595,23 +596,28 @@ public partial class MainForm : Form
     {
         try
         {
-            var result = ShortcutService.CreateShortcutAndPinToTaskbar();
-            if (result.DesktopCreated)
-            {
-                MessageBox.Show(this,
-                    result.Message ?? "Desktop shortcut created successfully!",
-                    "Shortcut Created",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show(this,
-                    result.Message ?? "Failed to create desktop shortcut.",
-                    "Shortcut Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-            }
+            ShortcutService.CreateDesktopShortcut();
+            MessageBox.Show(this,
+                "Shortcut successfully created on your Desktop!",
+                "Shortcut Created",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            MessageBox.Show(this,
+                $"Access was denied while creating the shortcut on your Desktop:\n\n{ex.Message}",
+                "Shortcut Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+        catch (COMException ex)
+        {
+            MessageBox.Show(this,
+                $"A COM error occurred while creating the shortcut:\n\n{ex.Message}",
+                "Shortcut Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
         catch (Exception ex)
         {
