@@ -41,6 +41,19 @@ public static class ExternalToolLauncher
         Process.Start(startInfo);
     }
 
+    public static void OpenFolderAndSelectItem(string filePath)
+    {
+        if (File.Exists(filePath))
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = $"/select,\"{filePath}\"",
+                UseShellExecute = true
+            });
+        }
+    }
+
     public static bool LaunchVnc(IPAddress address, string? customVncPath, out string? errorMessage)
     {
         errorMessage = null;

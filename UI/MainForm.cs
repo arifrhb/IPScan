@@ -591,6 +591,38 @@ public partial class MainForm : Form
         settingsForm.ShowDialog(this);
     }
 
+    private void btnShortcut_Click(object? sender, EventArgs e)
+    {
+        try
+        {
+            var result = ShortcutService.CreateShortcutAndPinToTaskbar();
+            if (result.DesktopCreated)
+            {
+                MessageBox.Show(this,
+                    result.Message ?? "Desktop shortcut created successfully!",
+                    "Shortcut Created",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(this,
+                    result.Message ?? "Failed to create desktop shortcut.",
+                    "Shortcut Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this,
+                $"An error occurred while creating the shortcut:\n\n{ex.Message}",
+                "Shortcut Error",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
+        }
+    }
+
     private void btnAbout_Click(object? sender, EventArgs e)
     {
         using var aboutDialog = new AboutDialog();
