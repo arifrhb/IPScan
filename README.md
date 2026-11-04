@@ -39,7 +39,7 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
   - Live filtering during scans and instant, zero-flicker switching on completed results without requiring a re-scan.
   - Export respects active filter (e.g. export only online targets when "Online" view is active).
 - **Accessible UI**: Accessible row and cell styling for Online/Offline states that **never relies on color alone** (explicit status badges `[+] Online` and `[-] Offline`).
-- **External Integration**: Context menu to launch Web browsers (`http`/`https`), Windows File Explorer shares (`\\<IP>\`), and auto-detected or custom VNC viewers.
+- **External Integration & Service Icons**: Right-click context menu with dedicated, crisp high-DPI service icons (HTTP, HTTPS, VNC, Shared SMB Folders, Copy IP, Copy Row Details) that dynamically updates URLs with the target host IP.
 - **Export Options**: Human-readable aligned `.txt` reports and native `.xlsx` Excel spreadsheets (powered by the zero-dependency, high-speed [MiniExcel](https://github.com/mini-software/MiniExcel) library).
 
 ---
@@ -174,7 +174,7 @@ dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained false -p:Pub
 
 ## Context Menu & External Tool Launcher
 
-Right-clicking any host row exposes:
+Right-clicking any host row exposes a context menu with dedicated service icons:
 - **Open HTTP (`http://<IP>`)**: Opens host in the default browser.
 - **Open HTTPS (`https://<IP>`)**: Opens host over HTTPS in the default browser.
 - **Launch VNC Viewer**:
