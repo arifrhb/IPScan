@@ -27,6 +27,12 @@ partial class MainForm
     private ToolStripStatusLabel lblElapsed = null!;
     private ToolStripStatusLabel lblVersionStrip = null!;
     private ContextMenuStrip contextMenu = null!;
+    private ToolStripMenuItem menuHttp = null!;
+    private ToolStripMenuItem menuHttps = null!;
+    private ToolStripMenuItem menuVnc = null!;
+    private ToolStripMenuItem menuExplorer = null!;
+    private ToolStripMenuItem menuCopyIp = null!;
+    private ToolStripMenuItem menuCopyRow = null!;
     private ToolTip toolTip = null!;
 
     protected override void Dispose(bool disposing)
@@ -71,13 +77,14 @@ partial class MainForm
         lblVersionStrip = new ToolStripStatusLabel();
 
         contextMenu = new ContextMenuStrip(components);
-        var menuHttp = new ToolStripMenuItem("Open HTTP (http://<IP>)");
-        var menuHttps = new ToolStripMenuItem("Open HTTPS (https://<IP>)");
-        var menuVnc = new ToolStripMenuItem("Launch VNC Viewer");
-        var menuExplorer = new ToolStripMenuItem("Open Shared Folders (\\\\<IP>\\)");
+        contextMenu.ImageScalingSize = new Size(16, 16);
+        menuHttp = new ToolStripMenuItem("Open HTTP (http://<IP>)", MenuIconHelper.CreateHttpIcon(16));
+        menuHttps = new ToolStripMenuItem("Open HTTPS (https://<IP>)", MenuIconHelper.CreateHttpsIcon(16));
+        menuVnc = new ToolStripMenuItem("Launch VNC Viewer", MenuIconHelper.CreateVncIcon(16));
+        menuExplorer = new ToolStripMenuItem("Open Shared Folders (\\\\<IP>\\)", MenuIconHelper.CreateSharedFolderIcon(16));
         var sep1 = new ToolStripSeparator();
-        var menuCopyIp = new ToolStripMenuItem("Copy IP Address");
-        var menuCopyRow = new ToolStripMenuItem("Copy Row Details");
+        menuCopyIp = new ToolStripMenuItem("Copy IP Address", MenuIconHelper.CreateCopyIpIcon(16));
+        menuCopyRow = new ToolStripMenuItem("Copy Row Details", MenuIconHelper.CreateCopyRowDetailsIcon(16));
 
         // 
         // pnlTop
@@ -247,6 +254,7 @@ partial class MainForm
         // 
         // Context Menu (Only contains IP actions)
         // 
+        contextMenu.Opening += ContextMenu_Opening;
         menuHttp.Click += menuHttp_Click;
         menuHttps.Click += menuHttps_Click;
         menuVnc.Click += menuVnc_Click;
