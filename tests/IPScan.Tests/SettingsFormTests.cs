@@ -81,5 +81,31 @@ public class SettingsFormTests
             form.Close();
         });
     }
+
+    [Fact]
+    public void SettingsForm_ResolveMacAddressCheckbox_InitializesAndSavesProperly()
+    {
+        RunOnStaThread(() =>
+        {
+            var options = new ScanOptions { ResolveMacAddress = true };
+            using var form = new SettingsForm(options);
+            form.Show();
+
+            var chkMacField = typeof(SettingsForm).GetField("chkResolveMacAddress", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.NotNull(chkMacField);
+
+            var chkMac = (CheckBox)chkMacField.GetValue(form)!;
+            Assert.True(chkMac.Checked);
+
+            // Toggle off and save
+            chkMac.Checked = false;
+            var btnSaveMethod = typeof(SettingsForm).GetMethod("btnSave_Click", BindingFlags.NonPublic | BindingFlags.Instance);
+            Assert.NotNull(btnSaveMethod);
+            btnSaveMethod.Invoke(form, new object?[] { null, EventArgs.Empty });
+
+            Assert.False(options.ResolveMacAddress);
+            form.Close();
+        });
+    }
 }
 

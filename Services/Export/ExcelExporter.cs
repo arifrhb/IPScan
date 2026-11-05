@@ -17,6 +17,7 @@ public sealed class ExcelExporter : IResultExporter
         var exportRows = results.Select(r => new
         {
             IPAddress = r.IpString,
+            MACAddress = !string.IsNullOrWhiteSpace(r.MacAddress) ? r.MacAddress : "-",
             Status = r.Status == HostStatus.Online ? "Online" : "Offline",
             RoundTripTime = r.Status == HostStatus.Online ? (r.RoundTripTimeMs >= 0 ? $"{r.RoundTripTimeMs} ms" : "< 1 ms") : "N/A",
             Hostname = !string.IsNullOrWhiteSpace(r.Hostname) ? r.Hostname : "-",

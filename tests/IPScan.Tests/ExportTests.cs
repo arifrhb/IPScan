@@ -21,7 +21,8 @@ public class ExportTests
                     RoundTripTimeMs = 2,
                     Hostname = "router.local",
                     NetBiosName = "ROUTER",
-                    LoggedInUser = null
+                    LoggedInUser = null,
+                    MacAddress = "00-11-22-33-44-55"
                 },
                 new()
                 {
@@ -39,7 +40,9 @@ public class ExportTests
             string content = await File.ReadAllTextAsync(tempFile);
 
             Assert.Contains("IPScan - Network Scan Report", content);
+            Assert.Contains("MAC Address", content);
             Assert.Contains("192.168.1.1", content);
+            Assert.Contains("00-11-22-33-44-55", content);
             Assert.Contains("Online", content);
             Assert.Contains("router.local", content);
             Assert.Contains("192.168.1.2", content);

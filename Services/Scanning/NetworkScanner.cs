@@ -118,11 +118,12 @@ public sealed class NetworkScanner
                 StatusMessage = pingResult.StatusMessage,
                 Hostname = null,
                 NetBiosName = null,
-                LoggedInUser = null
+                LoggedInUser = null,
+                MacAddress = null
             };
         }
 
-        // 2. Host is online - resolve DNS and NetBIOS concurrently
+        // 2. Host is online - resolve DNS, NetBIOS, and MAC address concurrently
         Task<string?> dnsTask = options.ResolveDns
             ? DnsService.ResolveHostnameAsync(address, options.TimeoutMs + 500, cancellationToken)
             : Task.FromResult<string?>(null);
@@ -131,9 +132,13 @@ public sealed class NetworkScanner
             ? NetBiosService.QueryNetBiosAsync(address, options.TimeoutMs, cancellationToken)
             : Task.FromResult<NetBiosResult?>(null);
 
+        Task<string?> macTask = options.ResolveMacAddress
+            ? MacAddressService.GetMacAddressAsync(address, options.TimeoutMs, cancellationToken)
+            : Task.FromResult<string?>(null);
+
         try
         {
-            await Task.WhenAll(dnsTask, netBiosTask);
+            await Task.WhenAll(dnsTask, netBiosTask, macTask);
         }
         catch (OperationCanceledException)
         {
@@ -154,6 +159,7 @@ public sealed class NetworkScanner
         string? hostname = dnsTask.IsCompletedSuccessfully ? await dnsTask : null;
         var netBios = netBiosTask.IsCompletedSuccessfully ? await netBiosTask : null;
         string? netBiosName = netBios?.FormattedName;
+        string? macAddress = macTask.IsCompletedSuccessfully ? await macTask : null;
 
         // 3. Resolve Logged-in Username via authorized WMI and NetBIOS discovery
         string? loggedInUser = null;
@@ -181,7 +187,8 @@ public sealed class NetworkScanner
             StatusMessage = pingResult.StatusMessage,
             Hostname = hostname,
             NetBiosName = netBiosName,
-            LoggedInUser = loggedInUser
+            LoggedInUser = loggedInUser,
+            MacAddress = macAddress
         };
     }
 }

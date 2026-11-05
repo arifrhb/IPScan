@@ -27,6 +27,12 @@ public sealed class ScanOptions
     public bool ResolveNetBios { get; set; } = true;
 
     /// <summary>
+    /// Whether to resolve MAC addresses for responsive hosts via ARP (SendARP).
+    /// Enabled by default.
+    /// </summary>
+    public bool ResolveMacAddress { get; set; } = true;
+
+    /// <summary>
     /// Whether to query logged-in username via authorized Windows discovery methods (WMI, NetAPI, and NetBIOS).
     /// Enabled by default.
     /// </summary>

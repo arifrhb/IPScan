@@ -21,6 +21,7 @@ public class MenuIconHelperTests
             ("VNC", MenuIconHelper.CreateVncIcon(size)),
             ("SharedFolder", MenuIconHelper.CreateSharedFolderIcon(size)),
             ("CopyIp", MenuIconHelper.CreateCopyIpIcon(size)),
+            ("CopyMac", MenuIconHelper.CreateCopyMacIcon(size)),
             ("CopyRow", MenuIconHelper.CreateCopyRowDetailsIcon(size))
         };
 

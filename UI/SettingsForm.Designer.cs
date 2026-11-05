@@ -8,6 +8,7 @@ partial class SettingsForm
     private NumericUpDown numLargeScanThreshold = null!;
     private CheckBox chkResolveDns = null!;
     private CheckBox chkResolveNetBios = null!;
+    private CheckBox chkResolveMacAddress = null!;
     private CheckBox chkQueryUser = null!;
     private Label lblVnc = null!;
     private TextBox txtVncPath = null!;
@@ -43,6 +44,7 @@ partial class SettingsForm
         numLargeScanThreshold = new NumericUpDown();
         chkResolveDns = new CheckBox();
         chkResolveNetBios = new CheckBox();
+        chkResolveMacAddress = new CheckBox();
         chkQueryUser = new CheckBox();
         lblVnc = new Label();
         txtVncPath = new TextBox();
@@ -101,38 +103,43 @@ partial class SettingsForm
         // grpDiscovery
         // 
         grpDiscovery.Location = new Point(12, 137);
-        grpDiscovery.Size = new Size(524, 140);
+        grpDiscovery.Size = new Size(524, 160);
         grpDiscovery.Text = "Host Discovery & Identification";
 
-        chkResolveDns.Location = new Point(15, 22);
-        chkResolveDns.Size = new Size(480, 24);
+        chkResolveDns.Location = new Point(15, 20);
+        chkResolveDns.Size = new Size(480, 22);
         chkResolveDns.Text = "Resolve Hostnames via Reverse DNS";
         chkResolveDns.Checked = true;
 
-        chkResolveNetBios.Location = new Point(15, 48);
-        chkResolveNetBios.Size = new Size(480, 24);
+        chkResolveNetBios.Location = new Point(15, 43);
+        chkResolveNetBios.Size = new Size(480, 22);
         chkResolveNetBios.Text = "Resolve NetBIOS Names (Node Status via UDP port 137)";
         chkResolveNetBios.Checked = true;
 
-        chkQueryUser.Location = new Point(15, 74);
-        chkQueryUser.Size = new Size(480, 24);
+        chkResolveMacAddress.Location = new Point(15, 66);
+        chkResolveMacAddress.Size = new Size(480, 22);
+        chkResolveMacAddress.Text = "Resolve MAC Addresses (ARP query via SendARP)";
+        chkResolveMacAddress.Checked = true;
+
+        chkQueryUser.Location = new Point(15, 89);
+        chkQueryUser.Size = new Size(480, 22);
         chkQueryUser.Text = "Query Logged-in Username (WMI, NetAPI & NetBIOS discovery)";
         chkQueryUser.Checked = true;
 
-        lblUserWarning.Location = new Point(35, 98);
+        lblUserWarning.Location = new Point(35, 114);
         lblUserWarning.Size = new Size(480, 36);
         lblUserWarning.ForeColor = Color.DarkSlateGray;
         lblUserWarning.Font = new Font(Font.FontFamily, 8.25f, FontStyle.Italic);
         lblUserWarning.Text = "Note: Discovers logged-in users via authorized Windows WMI/RPC (Win32_ComputerSystem & interactive session owner), NetAPI32, and NetBIOS registered names.";
 
         grpDiscovery.Controls.AddRange(new Control[] {
-            chkResolveDns, chkResolveNetBios, chkQueryUser, lblUserWarning
+            chkResolveDns, chkResolveNetBios, chkResolveMacAddress, chkQueryUser, lblUserWarning
         });
 
         // 
         // grpTools
         // 
-        grpTools.Location = new Point(12, 287);
+        grpTools.Location = new Point(12, 307);
         grpTools.Size = new Size(524, 115);
         grpTools.Text = "External Tools & VNC Viewer";
 
@@ -168,13 +175,13 @@ partial class SettingsForm
         // 
         // Buttons
         // 
-        btnSave.Location = new Point(360, 412);
+        btnSave.Location = new Point(360, 432);
         btnSave.Size = new Size(82, 30);
         btnSave.Text = "Save";
         btnSave.UseVisualStyleBackColor = true;
         btnSave.Click += btnSave_Click;
 
-        btnCancel.Location = new Point(450, 412);
+        btnCancel.Location = new Point(450, 432);
         btnCancel.Size = new Size(82, 30);
         btnCancel.Text = "Cancel";
         btnCancel.UseVisualStyleBackColor = true;
@@ -185,7 +192,7 @@ partial class SettingsForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(548, 454);
+        ClientSize = new Size(548, 474);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;

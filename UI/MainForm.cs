@@ -41,6 +41,7 @@ public partial class MainForm : Form
     public ToolStripMenuItem MenuVnc => menuVnc;
     public ToolStripMenuItem MenuExplorer => menuExplorer;
     public ToolStripMenuItem MenuCopyIp => menuCopyIp;
+    public ToolStripMenuItem MenuCopyMac => menuCopyMac;
     public ToolStripMenuItem MenuCopyRow => menuCopyRow;
 
     private void ApplyContextMenuIcons()
@@ -52,6 +53,7 @@ public partial class MainForm : Form
         menuVnc.Image = MenuIconHelper.CreateVncIcon(iconSize);
         menuExplorer.Image = MenuIconHelper.CreateSharedFolderIcon(iconSize);
         menuCopyIp.Image = MenuIconHelper.CreateCopyIpIcon(iconSize);
+        menuCopyMac.Image = MenuIconHelper.CreateCopyMacIcon(iconSize);
         menuCopyRow.Image = MenuIconHelper.CreateCopyRowDetailsIcon(iconSize);
     }
 
@@ -254,8 +256,8 @@ public partial class MainForm : Form
                 Name = "ColStatus",
                 HeaderText = "Status",
                 DataPropertyName = nameof(ScanResult.AccessibleStatus),
-                FillWeight = 11,
-                MinimumWidth = 75,
+                FillWeight = 10,
+                MinimumWidth = 65,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             },
             new DataGridViewTextBoxColumn
@@ -263,8 +265,17 @@ public partial class MainForm : Form
                 Name = "ColIp",
                 HeaderText = "IP Address",
                 DataPropertyName = nameof(ScanResult.IpString),
-                FillWeight = 14,
-                MinimumWidth = 105,
+                FillWeight = 12,
+                MinimumWidth = 95,
+                SortMode = DataGridViewColumnSortMode.Programmatic
+            },
+            new DataGridViewTextBoxColumn
+            {
+                Name = "ColMac",
+                HeaderText = "MAC Address",
+                DataPropertyName = nameof(ScanResult.MacAddressDisplay),
+                FillWeight = 15,
+                MinimumWidth = 115,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             },
             new DataGridViewTextBoxColumn
@@ -272,8 +283,8 @@ public partial class MainForm : Form
                 Name = "ColLatency",
                 HeaderText = "Latency / State",
                 DataPropertyName = nameof(ScanResult.LatencyString),
-                FillWeight = 14,
-                MinimumWidth = 105,
+                FillWeight = 12,
+                MinimumWidth = 90,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             },
             new DataGridViewTextBoxColumn
@@ -281,8 +292,8 @@ public partial class MainForm : Form
                 Name = "ColHostname",
                 HeaderText = "Hostname (DNS)",
                 DataPropertyName = nameof(ScanResult.HostnameDisplay),
-                FillWeight = 20,
-                MinimumWidth = 125,
+                FillWeight = 18,
+                MinimumWidth = 110,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             },
             new DataGridViewTextBoxColumn
@@ -290,8 +301,8 @@ public partial class MainForm : Form
                 Name = "ColNetBios",
                 HeaderText = "NetBIOS Name",
                 DataPropertyName = nameof(ScanResult.NetBiosDisplay),
-                FillWeight = 20,
-                MinimumWidth = 125,
+                FillWeight = 16,
+                MinimumWidth = 105,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             },
             new DataGridViewTextBoxColumn
@@ -299,8 +310,8 @@ public partial class MainForm : Form
                 Name = "ColUser",
                 HeaderText = "Logged-in User (WMI)",
                 DataPropertyName = nameof(ScanResult.LoggedInUserDisplay),
-                FillWeight = 21,
-                MinimumWidth = 135,
+                FillWeight = 17,
+                MinimumWidth = 110,
                 SortMode = DataGridViewColumnSortMode.Programmatic
             }
         });
@@ -841,6 +852,10 @@ public partial class MainForm : Form
         menuHttp.Text = $"Open HTTP (http://{ipText})";
         menuHttps.Text = $"Open HTTPS (https://{ipText})";
         menuExplorer.Text = $@"Open Shared Folders (\\{ipText}\)";
+
+        string macText = !string.IsNullOrWhiteSpace(res?.MacAddress) ? res.MacAddress : string.Empty;
+        menuCopyMac.Text = !string.IsNullOrWhiteSpace(macText) ? $"Copy MAC Address ({macText})" : "Copy MAC Address";
+        menuCopyMac.Enabled = !string.IsNullOrWhiteSpace(macText);
     }
 
     private ScanResult? GetSelectedResult()
@@ -912,11 +927,25 @@ public partial class MainForm : Form
         Clipboard.SetText(res.IpString);
     }
 
+    private void menuCopyMac_Click(object? sender, EventArgs e)
+    {
+        var res = GetSelectedResult();
+        if (res == null || string.IsNullOrWhiteSpace(res.MacAddress)) return;
+        try
+        {
+            Clipboard.SetText(res.MacAddress);
+        }
+        catch
+        {
+            // Ignore clipboard exceptions
+        }
+    }
+
     private void menuCopyRow_Click(object? sender, EventArgs e)
     {
         var res = GetSelectedResult();
         if (res == null) return;
-        string line = $"{res.IpString}\t{res.AccessibleStatus}\t{res.LatencyString}\t{res.HostnameDisplay}\t{res.NetBiosDisplay}\t{res.LoggedInUserDisplay}";
+        string line = $"{res.IpString}\t{res.MacAddressDisplay}\t{res.AccessibleStatus}\t{res.LatencyString}\t{res.HostnameDisplay}\t{res.NetBiosDisplay}\t{res.LoggedInUserDisplay}";
         Clipboard.SetText(line);
     }
 

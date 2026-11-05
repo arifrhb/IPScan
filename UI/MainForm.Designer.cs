@@ -32,6 +32,7 @@ partial class MainForm
     private ToolStripMenuItem menuVnc = null!;
     private ToolStripMenuItem menuExplorer = null!;
     private ToolStripMenuItem menuCopyIp = null!;
+    private ToolStripMenuItem menuCopyMac = null!;
     private ToolStripMenuItem menuCopyRow = null!;
     private ToolTip toolTip = null!;
 
@@ -84,6 +85,7 @@ partial class MainForm
         menuExplorer = new ToolStripMenuItem("Open Shared Folders (\\\\<IP>\\)", MenuIconHelper.CreateSharedFolderIcon(16));
         var sep1 = new ToolStripSeparator();
         menuCopyIp = new ToolStripMenuItem("Copy IP Address", MenuIconHelper.CreateCopyIpIcon(16));
+        menuCopyMac = new ToolStripMenuItem("Copy MAC Address", MenuIconHelper.CreateCopyMacIcon(16));
         menuCopyRow = new ToolStripMenuItem("Copy Row Details", MenuIconHelper.CreateCopyRowDetailsIcon(16));
 
         // 
@@ -260,6 +262,7 @@ partial class MainForm
         menuVnc.Click += menuVnc_Click;
         menuExplorer.Click += menuExplorer_Click;
         menuCopyIp.Click += menuCopyIp_Click;
+        menuCopyMac.Click += menuCopyMac_Click;
         menuCopyRow.Click += menuCopyRow_Click;
 
         contextMenu.Items.AddRange(new ToolStripItem[] {
@@ -269,6 +272,7 @@ partial class MainForm
             menuExplorer,
             sep1,
             menuCopyIp,
+            menuCopyMac,
             menuCopyRow
         });
 

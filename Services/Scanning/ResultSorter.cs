@@ -12,6 +12,7 @@ public static class ResultSorter
 {
     public const string ColumnStatus = "ColStatus";
     public const string ColumnIp = "ColIp";
+    public const string ColumnMac = "ColMac";
     public const string ColumnLatency = "ColLatency";
     public const string ColumnHostname = "ColHostname";
     public const string ColumnNetBios = "ColNetBios";
@@ -79,6 +80,9 @@ public sealed class ScanResultComparer : IComparer<ScanResult>
                 int cmp = ScanTarget.ToUint32(x.Address).CompareTo(ScanTarget.ToUint32(y.Address));
                 return desc ? -cmp : cmp;
             }
+
+            case ResultSorter.ColumnMac:
+                return CompareStringColumn(x.MacAddress, y.MacAddress, x, y, desc);
 
             case ResultSorter.ColumnLatency:
             {

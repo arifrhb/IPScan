@@ -123,5 +123,26 @@ public class ResultSorterTests
         Assert.Equal(@"CORP\alice", desc[1].LoggedInUser);
         Assert.Null(desc[2].LoggedInUser);
     }
+
+    [Fact]
+    public void Sort_ByMac_SortsAscendingAndDescending()
+    {
+        var list = new List<ScanResult>
+        {
+            new() { Address = IPAddress.Parse("10.0.0.3"), MacAddress = "AA-BB-CC-DD-EE-FF" },
+            new() { Address = IPAddress.Parse("10.0.0.1"), MacAddress = "00-11-22-33-44-55" },
+            new() { Address = IPAddress.Parse("10.0.0.2"), MacAddress = null }
+        };
+
+        var asc = ResultSorter.Sort(list, ResultSorter.ColumnMac, SortOrder.Ascending).ToList();
+        Assert.Equal("00-11-22-33-44-55", asc[0].MacAddress);
+        Assert.Equal("AA-BB-CC-DD-EE-FF", asc[1].MacAddress);
+        Assert.Null(asc[2].MacAddress);
+
+        var desc = ResultSorter.Sort(list, ResultSorter.ColumnMac, SortOrder.Descending).ToList();
+        Assert.Equal("AA-BB-CC-DD-EE-FF", desc[0].MacAddress);
+        Assert.Equal("00-11-22-33-44-55", desc[1].MacAddress);
+        Assert.Null(desc[2].MacAddress);
+    }
 }
 

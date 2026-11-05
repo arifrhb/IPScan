@@ -19,6 +19,12 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
   - Single IP addresses (e.g., `192.168.201.1`)
   - Comma-separated mixtures (e.g., `192.168.201.1-254, 192.168.101.1-254, 10.0.0.1, 10.0.1.0/24`)
   - Text files (`.txt`) with one entry per line, with automatic comment (`#`) and blank-line skipping.
+- **Hardware MAC Address Discovery**:
+  - Hardware (MAC) address resolution for discovered responsive hosts using the Windows IP Helper ARP API (`SendARP`).
+  - Active adapter inspection for localhost and local interface scanning.
+  - Formatted standardly in uppercase hyphenated hex (`AA-BB-CC-DD-EE-FF`).
+  - Context menu action **"Copy MAC Address"** with custom high-DPI vector icon.
+  - Full sorting support, settings toggle, and export to text and Excel (.xlsx).
 - **Upload File & Drag-and-Drop Scanning**:
   - "Upload File..." button and full window Drag-and-Drop for `.txt` files containing IP addresses line by line.
   - Automatically asks: *"Would you like to start scanning for live hosts now?"* to start scanning immediately.
@@ -47,7 +53,7 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
 ## System Requirements
 
 - **Operating System**: Windows 10, Windows 11, or Windows Server 2016+ (x64)
-- **Development Tooling**: Visual Studio 2022 (v17.8 or newer) with the **.NET desktop development** workload, or the .NET 8 / 9 SDK.
+- **Development Tooling**: Visual Studio 2022 (v17.12 or newer) with the **.NET desktop development** workload, or the .NET 9 SDK.
 
 ---
 
@@ -74,6 +80,7 @@ d:\IPScan\
 │   │   ├── NetworkScanner.cs               # Bounded concurrency engine (SemaphoreSlim & CancellationToken)
 │   │   ├── PingService.cs                  # ICMP Echo ping with configurable timeouts
 │   │   ├── DnsService.cs                   # Asynchronous reverse DNS resolver
+│   │   ├── MacAddressService.cs            # Windows SendARP hardware (MAC) address resolver (AA-BB-CC-DD-EE-FF)
 │   │   ├── NetBiosService.cs               # RFC 1001/1002 NetBIOS NBNS node status query (UDP 137)
 │   │   └── WmiUserService.cs               # Authorized Windows WMI logged-in user lookup
 │   ├── External/
@@ -115,20 +122,20 @@ dotnet test IPScan.sln
 ### 3. Publishing a Standalone Single-File Executable
 
 #### Option A: Self-Contained Single-File (Recommended for portability)
-Bundles the .NET 8 runtime and native libraries into a single `.exe` file that runs on any compatible 64-bit Windows system without requiring .NET to be installed:
+Bundles the .NET 9 runtime and native libraries into a single `.exe` file that runs on any compatible 64-bit Windows system without requiring .NET to be installed:
 ```powershell
 dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish/self-contained
 ```
 - **Output Executable**: `./publish/self-contained/IPScan.exe`
-- **File Size**: ~71 MB (compressed bundle containing runtime + WPF/WinForms base class libraries).
+- **File Size**: ~50 MB (compressed bundle containing runtime + WinForms base class libraries).
 
 #### Option B: Framework-Dependent Single-File (Ultra-lightweight)
-Produces a tiny single executable that relies on the .NET 8 Desktop Runtime installed on the machine:
+Produces a tiny single executable that relies on the .NET 9 Desktop Runtime installed on the machine:
 ```powershell
 dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o ./publish/framework-dependent
 ```
 - **Output Executable**: `./publish/framework-dependent/IPScan.exe`
-- **File Size**: **~980 KB (< 1 MB!)**
+- **File Size**: **~1.3 MB**
 
 ---
 
@@ -136,8 +143,8 @@ dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained false -p:Pub
 
 | Strategy | File Size | Dependencies | Tradeoffs & Considerations |
 | :--- | :--- | :--- | :--- |
-| **Self-Contained Single-File** | ~71 MB | None (runs out of the box on Windows 10/11) | Larger file size because the entire .NET runtime and Windows desktop subsystem are embedded. Fast startup via memory compression. |
-| **Framework-Dependent Single-File** | ~980 KB | Requires .NET 8 Desktop Runtime | Extremely fast download and tiny footprint; perfect for managed enterprise fleets where .NET 8 is already deployed. |
+| **Self-Contained Single-File** | ~50 MB | None (runs out of the box on Windows 10/11) | Larger file size because the entire .NET runtime and Windows desktop subsystem are embedded. Fast startup via memory compression. |
+| **Framework-Dependent Single-File** | ~1.3 MB | Requires .NET 9 Desktop Runtime | Extremely fast download and tiny footprint; perfect for managed enterprise fleets where .NET 9 is already deployed. |
 | **Trimming (`PublishTrimmed=true`)** | ~35-45 MB | None | **Not recommended for WinForms**: Windows Forms and WMI rely on reflection, GDI+ Win32 handles, and dynamic COM activation. Aggressive IL trimming can strip critical metadata and cause runtime crashes in DataGridView or WMI querying. |
 
 ---

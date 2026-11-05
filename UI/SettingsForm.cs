@@ -28,6 +28,7 @@ public partial class SettingsForm : Form
         numLargeScanThreshold.Value = Math.Clamp(_options.LargeScanWarningThreshold, numLargeScanThreshold.Minimum, numLargeScanThreshold.Maximum);
         chkResolveDns.Checked = _options.ResolveDns;
         chkResolveNetBios.Checked = _options.ResolveNetBios;
+        chkResolveMacAddress.Checked = _options.ResolveMacAddress;
         chkQueryUser.Checked = _options.QueryLoggedInUser;
 
         string? vncPath = _options.CustomVncViewerPath;
@@ -62,6 +63,7 @@ public partial class SettingsForm : Form
         _options.LargeScanWarningThreshold = (int)numLargeScanThreshold.Value;
         _options.ResolveDns = chkResolveDns.Checked;
         _options.ResolveNetBios = chkResolveNetBios.Checked;
+        _options.ResolveMacAddress = chkResolveMacAddress.Checked;
         _options.QueryLoggedInUser = chkQueryUser.Checked;
         _options.CustomVncViewerPath = string.IsNullOrWhiteSpace(txtVncPath.Text) ? null : txtVncPath.Text.Trim();
 

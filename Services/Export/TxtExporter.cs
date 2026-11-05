@@ -25,21 +25,22 @@ public sealed class TxtExporter : IResultExporter
         sb.AppendLine($"Total Scanned Targets : {results.Count}");
         sb.AppendLine($"Online Hosts Found    : {onlineCount}");
         sb.AppendLine($"Offline / Unreachable : {offlineCount}");
-        sb.AppendLine("-----------------------------------------------------------------------------------------");
-        sb.AppendLine(string.Format("{0,-17} | {1,-10} | {2,-10} | {3,-24} | {4,-20} | {5}",
-            "IP Address", "Status", "Latency", "Hostname", "NetBIOS Name", "Logged-in User"));
-        sb.AppendLine("-----------------------------------------------------------------------------------------");
+        sb.AppendLine("------------------------------------------------------------------------------------------------------------------");
+        sb.AppendLine(string.Format("{0,-17} | {1,-19} | {2,-10} | {3,-10} | {4,-24} | {5,-20} | {6}",
+            "IP Address", "MAC Address", "Status", "Latency", "Hostname", "NetBIOS Name", "Logged-in User"));
+        sb.AppendLine("------------------------------------------------------------------------------------------------------------------");
 
         foreach (var r in results)
         {
+            string mac = !string.IsNullOrWhiteSpace(r.MacAddress) ? r.MacAddress : "-";
             string status = r.Status == HostStatus.Online ? "Online" : "Offline";
             string latency = r.Status == HostStatus.Online ? (r.RoundTripTimeMs >= 0 ? $"{r.RoundTripTimeMs} ms" : "<1 ms") : "-";
             string host = !string.IsNullOrWhiteSpace(r.Hostname) ? r.Hostname : "-";
             string netbios = !string.IsNullOrWhiteSpace(r.NetBiosName) ? r.NetBiosName : "-";
             string user = !string.IsNullOrWhiteSpace(r.LoggedInUser) ? r.LoggedInUser : "-";
 
-            sb.AppendLine(string.Format("{0,-17} | {1,-10} | {2,-10} | {3,-24} | {4,-20} | {5}",
-                r.IpString, status, latency, host, netbios, user));
+            sb.AppendLine(string.Format("{0,-17} | {1,-19} | {2,-10} | {3,-10} | {4,-24} | {5,-20} | {6}",
+                r.IpString, mac, status, latency, host, netbios, user));
         }
 
         sb.AppendLine("=========================================================================================");

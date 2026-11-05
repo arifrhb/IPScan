@@ -20,6 +20,7 @@ public sealed class ScanResult
     public string? Hostname { get; init; }
     public string? NetBiosName { get; init; }
     public string? LoggedInUser { get; init; }
+    public string? MacAddress { get; init; }
     public string StatusMessage { get; init; } = string.Empty;
     public DateTime ScannedAt { get; init; } = DateTime.Now;
 
@@ -44,5 +45,6 @@ public sealed class ScanResult
     public string HostnameDisplay => !string.IsNullOrWhiteSpace(Hostname) ? Hostname : "-";
     public string NetBiosDisplay => !string.IsNullOrWhiteSpace(NetBiosName) ? NetBiosName : "-";
     public string LoggedInUserDisplay => !string.IsNullOrWhiteSpace(LoggedInUser) ? LoggedInUser : "-";
+    public string MacAddressDisplay => !string.IsNullOrWhiteSpace(MacAddress) ? MacAddress : "-";
 }
 

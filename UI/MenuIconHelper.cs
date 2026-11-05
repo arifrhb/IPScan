@@ -15,6 +15,7 @@ public static class MenuIconHelper
     private static readonly Dictionary<int, Bitmap> _vncCache = new();
     private static readonly Dictionary<int, Bitmap> _sharedFolderCache = new();
     private static readonly Dictionary<int, Bitmap> _copyIpCache = new();
+    private static readonly Dictionary<int, Bitmap> _copyMacCache = new();
     private static readonly Dictionary<int, Bitmap> _copyRowCache = new();
     private static readonly object _syncLock = new();
 
@@ -84,6 +85,20 @@ public static class MenuIconHelper
             if (_copyIpCache.TryGetValue(size, out var cached)) return (Bitmap)cached.Clone();
             var bmp = RenderCopyIpIcon(size);
             _copyIpCache[size] = bmp;
+            return (Bitmap)bmp.Clone();
+        }
+    }
+
+    /// <summary>
+    /// Creates or returns a cached Copy MAC Address icon.
+    /// </summary>
+    public static Bitmap CreateCopyMacIcon(int size = 16)
+    {
+        lock (_syncLock)
+        {
+            if (_copyMacCache.TryGetValue(size, out var cached)) return (Bitmap)cached.Clone();
+            var bmp = RenderCopyMacIcon(size);
+            _copyMacCache[size] = bmp;
             return (Bitmap)bmp.Clone();
         }
     }
@@ -379,6 +394,46 @@ public static class MenuIconHelper
         g.DrawLine(linePen1, 3.5f * s, 6.8f * s, 8.5f * s, 6.8f * s);
         g.DrawLine(linePen2, 3.5f * s, 9.2f * s, 7.5f * s, 9.2f * s);
         g.DrawLine(linePen3, 3.5f * s, 11.6f * s, 6f * s, 11.6f * s);
+
+        return bmp;
+    }
+
+    private static Bitmap RenderCopyMacIcon(int size)
+    {
+        var bmp = new Bitmap(size, size, PixelFormat.Format32bppArgb);
+        using var g = CreateConfiguredGraphics(bmp);
+        float s = size / 16f;
+
+        // 1. Back Sheet
+        using (var backPath = CreateRoundedRectanglePath(4.5f * s, 1.5f * s, 10f * s, 10.5f * s, 1.2f * s))
+        {
+            using var backBrush = new SolidBrush(Color.FromArgb(236, 239, 241));
+            g.FillPath(backBrush, backPath);
+            using var backPen = new Pen(Color.FromArgb(176, 190, 197), Math.Max(0.8f, 1f * s));
+            g.DrawPath(backPen, backPath);
+        }
+
+        // 2. Front Card / Adapter
+        using (var frontPath = CreateRoundedRectanglePath(1.5f * s, 4f * s, 10f * s, 10.5f * s, 1.2f * s))
+        {
+            using var frontBrush = new SolidBrush(Color.White);
+            g.FillPath(frontBrush, frontPath);
+            using var frontPen = new Pen(Color.FromArgb(0, 150, 136), Math.Max(1f, 1.2f * s)); // Teal
+            g.DrawPath(frontPen, frontPath);
+        }
+
+        // 3. Network pins on top
+        using var pinBrush = new SolidBrush(Color.FromArgb(255, 179, 0));
+        g.FillRectangle(pinBrush, 3.5f * s, 5.5f * s, 1.2f * s, 2f * s);
+        g.FillRectangle(pinBrush, 5.5f * s, 5.5f * s, 1.2f * s, 2f * s);
+        g.FillRectangle(pinBrush, 7.5f * s, 5.5f * s, 1.2f * s, 2f * s);
+
+        // 4. Hex MAC indicator lines
+        using var linePen1 = new Pen(Color.FromArgb(0, 150, 136), Math.Max(1f, 1.2f * s));
+        using var linePen2 = new Pen(Color.FromArgb(77, 182, 172), Math.Max(1f, 1.2f * s));
+
+        g.DrawLine(linePen1, 3.5f * s, 9.5f * s, 9.5f * s, 9.5f * s);
+        g.DrawLine(linePen2, 3.5f * s, 12f * s, 7.5f * s, 12f * s);
 
         return bmp;
     }
