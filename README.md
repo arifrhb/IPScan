@@ -1,6 +1,6 @@
 # IPScan - Lightweight Standalone Desktop IP Scanner
 
-A lightweight, high-performance Windows desktop IP scanner built with **C#**, **.NET 9**, and **Windows Forms**. Designed for systems administrators, network engineers, and authorized security professionals to audit, inventory, and assess local and remote networks they own or have explicit authorization to assess.
+A lightweight, high-performance Windows desktop IP scanner built with **C#**, **.NET 10 (LTS)**, and **Windows Forms**. Designed for systems administrators, network engineers, and authorized security professionals to audit, inventory, and assess local and remote networks they own or have explicit authorization to assess.
 
 ---
 
@@ -53,7 +53,7 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
 ## System Requirements
 
 - **Operating System**: Windows 10, Windows 11, or Windows Server 2016+ (x64)
-- **Development Tooling**: Visual Studio 2022 (v17.12 or newer) with the **.NET desktop development** workload, or the .NET 9 SDK.
+- **Development Tooling**: Visual Studio 2026 (or Visual Studio 2022 v17.12+) with the **.NET desktop development** workload, or the .NET 10 SDK (LTS).
 
 ---
 
@@ -61,8 +61,8 @@ A lightweight, high-performance Windows desktop IP scanner built with **C#**, **
 
 ```
 d:\IPScan\
-├── IPScan.sln                              # Visual Studio 2022 solution
-├── IPScan.csproj                           # Project file targeting net8.0-windows
+├── IPScan.sln                              # Visual Studio 2026 / 2022 solution
+├── IPScan.csproj                           # Project file targeting net10.0-windows
 ├── Program.cs                              # Application entry point (no auto-scan on start)
 ├── targets_example.txt                     # Sample target list with comments & CIDR ranges
 │
@@ -101,15 +101,15 @@ d:\IPScan\
 │       └── FolderProfile-FrameworkDependent.pubxml
 │
 └── tests/
-    └── IPScan.Tests/                       # Automated xUnit test suite (17 tests)
+    └── IPScan.Tests/                       # Automated xUnit test suite (73 tests)
 ```
 
 ---
 
 ## Building and Publishing
 
-### 1. Build and Run in Visual Studio 2022
-1. Open `IPScan.sln` in **Visual Studio 2022**.
+### 1. Build and Run in Visual Studio 2026 / 2022
+1. Open `IPScan.sln` in **Visual Studio 2026** (or **Visual Studio 2022**).
 2. Select **Release** or **Debug** configuration with **Any CPU** or **x64**.
 3. Press `F5` to build and run, or `Ctrl+F5` to run without debugging.
 
@@ -122,7 +122,7 @@ dotnet test IPScan.sln
 ### 3. Publishing a Standalone Single-File Executable
 
 #### Option A: Self-Contained Single-File (Recommended for portability)
-Bundles the .NET 9 runtime and native libraries into a single `.exe` file that runs on any compatible 64-bit Windows system without requiring .NET to be installed:
+Bundles the .NET 10 runtime and native libraries into a single `.exe` file that runs on any compatible 64-bit Windows system without requiring .NET to be installed:
 ```powershell
 dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish/self-contained
 ```
@@ -130,7 +130,7 @@ dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained true -p:Publ
 - **File Size**: ~50 MB (compressed bundle containing runtime + WinForms base class libraries).
 
 #### Option B: Framework-Dependent Single-File (Ultra-lightweight)
-Produces a tiny single executable that relies on the .NET 9 Desktop Runtime installed on the machine:
+Produces a tiny single executable that relies on the .NET 10 Desktop Runtime installed on the machine:
 ```powershell
 dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o ./publish/framework-dependent
 ```
@@ -144,7 +144,7 @@ dotnet publish IPScan.csproj -c Release -r win-x64 --self-contained false -p:Pub
 | Strategy | File Size | Dependencies | Tradeoffs & Considerations |
 | :--- | :--- | :--- | :--- |
 | **Self-Contained Single-File** | ~50 MB | None (runs out of the box on Windows 10/11) | Larger file size because the entire .NET runtime and Windows desktop subsystem are embedded. Fast startup via memory compression. |
-| **Framework-Dependent Single-File** | ~1.3 MB | Requires .NET 9 Desktop Runtime | Extremely fast download and tiny footprint; perfect for managed enterprise fleets where .NET 9 is already deployed. |
+| **Framework-Dependent Single-File** | ~1.3 MB | Requires .NET 10 Desktop Runtime | Extremely fast download and tiny footprint; perfect for managed enterprise fleets where .NET 10 is already deployed. |
 | **Trimming (`PublishTrimmed=true`)** | ~35-45 MB | None | **Not recommended for WinForms**: Windows Forms and WMI rely on reflection, GDI+ Win32 handles, and dynamic COM activation. Aggressive IL trimming can strip critical metadata and cause runtime crashes in DataGridView or WMI querying. |
 
 ---
@@ -242,7 +242,7 @@ $signtool = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtoo
 & $signtool verify /pa /v "./publish/self-contained/IPScan.exe"
 ```
 
-#### 2. Configuring Signing in Visual Studio 2022
+#### 2. Configuring Signing in Visual Studio 2026 / 2022
 1. Right-click the **IPScan** project in Solution Explorer and select **Properties**.
 2. Navigate to the **Build** -> **Strong naming** or create a **Post-build event** / **Publish Profile** hook.
 3. In `IPScan.csproj`, you can add a post-publish target:

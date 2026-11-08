@@ -35,96 +35,154 @@ partial class AboutDialog
         lblDisclaimer = new Label();
         lnkGitHub = new LinkLabel();
         btnClose = new Button();
-
-        var pnlHeader = new Panel();
-        var pnlDivider = new Panel();
-
+        pnlHeader = new Panel();
+        pnlDivider = new Panel();
+        ((System.ComponentModel.ISupportInitialize)picIcon).BeginInit();
+        pnlHeader.SuspendLayout();
+        SuspendLayout();
         // 
-        // pnlHeader
+        // picIcon
         // 
-        pnlHeader.BackColor = Color.FromArgb(15, 23, 42); // Deep slate
-        pnlHeader.Dock = DockStyle.Top;
-        pnlHeader.Height = 80;
-
         picIcon.Location = new Point(16, 12);
+        picIcon.Name = "picIcon";
         picIcon.Size = new Size(56, 56);
         picIcon.SizeMode = PictureBoxSizeMode.Zoom;
-
-        lblTitle.Location = new Point(85, 16);
-        lblTitle.Size = new Size(360, 26);
-        lblTitle.Font = new Font(Font.FontFamily, 14f, FontStyle.Bold);
+        picIcon.TabIndex = 0;
+        picIcon.TabStop = false;
+        // 
+        // lblTitle
+        // 
+        lblTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
         lblTitle.ForeColor = Color.White;
+        lblTitle.Location = new Point(85, 16);
+        lblTitle.Name = "lblTitle";
+        lblTitle.Size = new Size(360, 26);
+        lblTitle.TabIndex = 1;
         lblTitle.Text = "IPScan";
-
+        // 
+        // lblVersion
+        // 
+        lblVersion.Font = new Font("Segoe UI", 9F);
+        lblVersion.ForeColor = Color.FromArgb(56, 189, 248);
         lblVersion.Location = new Point(86, 44);
+        lblVersion.Name = "lblVersion";
         lblVersion.Size = new Size(360, 20);
-        lblVersion.Font = new Font(Font.FontFamily, 9f, FontStyle.Regular);
-        lblVersion.ForeColor = Color.FromArgb(56, 189, 248); // Cyan
+        lblVersion.TabIndex = 2;
         lblVersion.Text = "Version 1.1.0";
-
-        pnlHeader.Controls.AddRange(new Control[] { picIcon, lblTitle, lblVersion });
-
         // 
-        // Details
+        // lblDeveloper
         // 
+        lblDeveloper.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         lblDeveloper.Location = new Point(25, 95);
+        lblDeveloper.Name = "lblDeveloper";
         lblDeveloper.Size = new Size(420, 20);
-        lblDeveloper.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
+        lblDeveloper.TabIndex = 1;
         lblDeveloper.Text = "Developer: Md. Arif Uddin";
-
-        lblCopyright.Location = new Point(25, 118);
-        lblCopyright.Size = new Size(420, 20);
+        // 
+        // lblCopyright
+        // 
         lblCopyright.ForeColor = Color.FromArgb(71, 85, 105);
+        lblCopyright.Location = new Point(25, 118);
+        lblCopyright.Name = "lblCopyright";
+        lblCopyright.Size = new Size(420, 20);
+        lblCopyright.TabIndex = 2;
         lblCopyright.Text = "Copyright © 2026 IPScan Contributors. All rights reserved.";
-
-        lblFramework.Location = new Point(25, 140);
-        lblFramework.Size = new Size(420, 20);
+        // 
+        // lblFramework
+        // 
         lblFramework.ForeColor = Color.FromArgb(71, 85, 105);
-        lblFramework.Text = "Runtime: .NET 9.0";
-
-        pnlDivider.Location = new Point(25, 166);
-        pnlDivider.Size = new Size(410, 1);
-        pnlDivider.BackColor = Color.FromArgb(226, 232, 240);
-
+        lblFramework.Location = new Point(25, 140);
+        lblFramework.Name = "lblFramework";
+        lblFramework.Size = new Size(420, 20);
+        lblFramework.TabIndex = 3;
+        lblFramework.Text = "Runtime: .NET 10.0 LTS";
+        // 
+        // lblDescription
+        // 
         lblDescription.Location = new Point(25, 178);
+        lblDescription.Name = "lblDescription";
         lblDescription.Size = new Size(410, 38);
+        lblDescription.TabIndex = 5;
         lblDescription.Text = "A lightweight, standalone desktop IP scanner designed for fast host discovery, NetBIOS resolution, and authorized network assessment.";
-
-        lblDisclaimer.Location = new Point(25, 222);
-        lblDisclaimer.Size = new Size(410, 36);
-        lblDisclaimer.Font = new Font(Font.FontFamily, 8f, FontStyle.Italic);
+        // 
+        // lblDisclaimer
+        // 
+        lblDisclaimer.Font = new Font("Segoe UI", 8F, FontStyle.Italic);
         lblDisclaimer.ForeColor = Color.FromArgb(100, 116, 139);
+        lblDisclaimer.Location = new Point(25, 222);
+        lblDisclaimer.Name = "lblDisclaimer";
+        lblDisclaimer.Size = new Size(410, 36);
+        lblDisclaimer.TabIndex = 6;
         lblDisclaimer.Text = "Authorized Use Notice: For diagnostic and inventory use only on networks you own or have written permission to assess.";
-
+        // 
+        // lnkGitHub
+        // 
         lnkGitHub.Location = new Point(25, 270);
-        lnkGitHub.Size = new Size(160, 22);
+        lnkGitHub.Name = "lnkGitHub";
+        lnkGitHub.Size = new Size(314, 22);
+        lnkGitHub.TabIndex = 7;
+        lnkGitHub.TabStop = true;
         lnkGitHub.Text = "Github";
         lnkGitHub.LinkClicked += lnkGitHub_LinkClicked;
-
+        // 
+        // btnClose
+        // 
         btnClose.Location = new Point(345, 265);
+        btnClose.Name = "btnClose";
         btnClose.Size = new Size(90, 30);
+        btnClose.TabIndex = 8;
         btnClose.Text = "Close";
         btnClose.UseVisualStyleBackColor = true;
         btnClose.Click += btnClose_Click;
-
+        // 
+        // pnlHeader
+        // 
+        pnlHeader.BackColor = Color.FromArgb(15, 23, 42);
+        pnlHeader.Controls.Add(picIcon);
+        pnlHeader.Controls.Add(lblTitle);
+        pnlHeader.Controls.Add(lblVersion);
+        pnlHeader.Dock = DockStyle.Top;
+        pnlHeader.Location = new Point(0, 0);
+        pnlHeader.Name = "pnlHeader";
+        pnlHeader.Size = new Size(460, 80);
+        pnlHeader.TabIndex = 0;
+        // 
+        // pnlDivider
+        // 
+        pnlDivider.BackColor = Color.FromArgb(226, 232, 240);
+        pnlDivider.Location = new Point(25, 166);
+        pnlDivider.Name = "pnlDivider";
+        pnlDivider.Size = new Size(410, 1);
+        pnlDivider.TabIndex = 4;
         // 
         // AboutDialog
         // 
+        AcceptButton = btnClose;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
+        CancelButton = btnClose;
         ClientSize = new Size(460, 310);
+        Controls.Add(pnlHeader);
+        Controls.Add(lblDeveloper);
+        Controls.Add(lblCopyright);
+        Controls.Add(lblFramework);
+        Controls.Add(pnlDivider);
+        Controls.Add(lblDescription);
+        Controls.Add(lblDisclaimer);
+        Controls.Add(lnkGitHub);
+        Controls.Add(btnClose);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
+        Name = "AboutDialog";
         StartPosition = FormStartPosition.CenterParent;
         Text = "About IPScan";
-        CancelButton = btnClose;
-        AcceptButton = btnClose;
-
-        Controls.AddRange(new Control[] {
-            pnlHeader, lblDeveloper, lblCopyright, lblFramework,
-            pnlDivider, lblDescription, lblDisclaimer, lnkGitHub, btnClose
-        });
+        ((System.ComponentModel.ISupportInitialize)picIcon).EndInit();
+        pnlHeader.ResumeLayout(false);
+        ResumeLayout(false);
     }
+
+    private Panel pnlHeader;
+    private Panel pnlDivider;
 }
 
