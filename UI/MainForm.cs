@@ -281,7 +281,7 @@ public partial class MainForm : Form
             new DataGridViewTextBoxColumn
             {
                 Name = "ColLatency",
-                HeaderText = "Latency / State",
+                HeaderText = "Latency",
                 DataPropertyName = nameof(ScanResult.LatencyString),
                 FillWeight = 12,
                 MinimumWidth = 90,
