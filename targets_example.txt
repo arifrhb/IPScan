@@ -7,15 +7,15 @@
 127.0.0.1
 
 # Specific hosts
-192.168.1.1
-192.168.1.100
+172.45.25.155
+172.45.25.102
 
 # Subnet octet dash-ranges
-192.168.201.1-254
-192.168.101.1-254
+172.45.25.1-254
+172.23.18.1-254
 
 # Full IP range notation
-10.0.0.1-10.0.0.50
+172.45.25.1-172.45.25.50
 
 # CIDR Subnet range (x is treated as a placeholder for the entire /24)
 172.16.0.x/24
