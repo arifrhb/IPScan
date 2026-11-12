@@ -1,10 +1,10 @@
-using IPScan.Models;
-
 namespace IPScan.UI;
 
 partial class MainForm
 {
     private System.ComponentModel.IContainer components = null!;
+    private Panel pnlTop = null!;
+    private Label lblInputHeader = null!;
     private Panel pnlInputWrapper = null!;
     private TextBox txtInput = null!;
     private Button btnStart = null!;
@@ -31,6 +31,7 @@ partial class MainForm
     private ToolStripMenuItem menuHttps = null!;
     private ToolStripMenuItem menuVnc = null!;
     private ToolStripMenuItem menuExplorer = null!;
+    private ToolStripSeparator sep1 = null!;
     private ToolStripMenuItem menuCopyIp = null!;
     private ToolStripMenuItem menuCopyMac = null!;
     private ToolStripMenuItem menuCopyRow = null!;
@@ -49,11 +50,9 @@ partial class MainForm
     {
         components = new System.ComponentModel.Container();
         toolTip = new ToolTip(components);
-
-        var pnlTop = new Panel();
-        var lblInputHeader = new Label();
+        pnlTop = new Panel();
+        lblInputHeader = new Label();
         lblFilter = new Label();
-
         pnlInputWrapper = new Panel();
         txtInput = new TextBox();
         btnStart = new Button();
@@ -64,11 +63,9 @@ partial class MainForm
         btnAbout = new Button();
         btnShortcut = new Button();
         lblTargetInfo = new Label();
-
         btnFilterAll = new Button();
         btnFilterOnline = new Button();
         btnFilterOffline = new Button();
-
         gridResults = new DataGridView();
         pnlGridContainer = new Panel();
         statusStrip = new StatusStrip();
@@ -76,221 +73,389 @@ partial class MainForm
         progressBar = new ToolStripProgressBar();
         lblElapsed = new ToolStripStatusLabel();
         lblVersionStrip = new ToolStripStatusLabel();
-
         contextMenu = new ContextMenuStrip(components);
-        contextMenu.ImageScalingSize = new Size(16, 16);
-        menuHttp = new ToolStripMenuItem("Open HTTP (http://<IP>)", MenuIconHelper.CreateHttpIcon(16));
-        menuHttps = new ToolStripMenuItem("Open HTTPS (https://<IP>)", MenuIconHelper.CreateHttpsIcon(16));
-        menuVnc = new ToolStripMenuItem("Launch VNC Viewer", MenuIconHelper.CreateVncIcon(16));
-        menuExplorer = new ToolStripMenuItem("Open Shared Folders (\\\\<IP>\\)", MenuIconHelper.CreateSharedFolderIcon(16));
-        var sep1 = new ToolStripSeparator();
-        menuCopyIp = new ToolStripMenuItem("Copy IP Address", MenuIconHelper.CreateCopyIpIcon(16));
-        menuCopyMac = new ToolStripMenuItem("Copy MAC Address", MenuIconHelper.CreateCopyMacIcon(16));
-        menuCopyRow = new ToolStripMenuItem("Copy Row Details", MenuIconHelper.CreateCopyRowDetailsIcon(16));
+        menuHttp = new ToolStripMenuItem();
+        menuHttps = new ToolStripMenuItem();
+        menuVnc = new ToolStripMenuItem();
+        menuExplorer = new ToolStripMenuItem();
+        sep1 = new ToolStripSeparator();
+        menuCopyIp = new ToolStripMenuItem();
+        menuCopyMac = new ToolStripMenuItem();
+        menuCopyRow = new ToolStripMenuItem();
+
+        pnlTop.SuspendLayout();
+        pnlInputWrapper.SuspendLayout();
+        pnlGridContainer.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)gridResults).BeginInit();
+        statusStrip.SuspendLayout();
+        contextMenu.SuspendLayout();
+        SuspendLayout();
 
         // 
         // pnlTop
         // 
-        pnlTop.Dock = DockStyle.Top;
-        pnlTop.Height = 88;
         pnlTop.BackColor = SystemColors.Control;
+        pnlTop.Controls.Add(lblInputHeader);
+        pnlTop.Controls.Add(pnlInputWrapper);
+        pnlTop.Controls.Add(btnLoadFile);
+        pnlTop.Controls.Add(lblTargetInfo);
+        pnlTop.Controls.Add(btnStart);
+        pnlTop.Controls.Add(btnCancel);
+        pnlTop.Controls.Add(btnSettings);
+        pnlTop.Controls.Add(btnExport);
+        pnlTop.Controls.Add(btnAbout);
+        pnlTop.Controls.Add(btnShortcut);
+        pnlTop.Controls.Add(lblFilter);
+        pnlTop.Controls.Add(btnFilterAll);
+        pnlTop.Controls.Add(btnFilterOnline);
+        pnlTop.Controls.Add(btnFilterOffline);
+        pnlTop.Dock = DockStyle.Top;
+        pnlTop.Location = new Point(0, 0);
+        pnlTop.Name = "pnlTop";
+        pnlTop.Size = new Size(960, 88);
         pnlTop.TabIndex = 0;
 
-        // Row 1: Clear "IP Range:" label, compact input wrapper on the right, and comfortable margins
+        // 
+        // lblInputHeader
+        // 
+        lblInputHeader.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         lblInputHeader.Location = new Point(25, 15);
+        lblInputHeader.Name = "lblInputHeader";
         lblInputHeader.Size = new Size(80, 20);
+        lblInputHeader.TabIndex = 11;
         lblInputHeader.Text = "IP Range:";
         lblInputHeader.TextAlign = ContentAlignment.MiddleLeft;
-        lblInputHeader.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
 
-        pnlInputWrapper.Location = new Point(110, 10);
-        pnlInputWrapper.Size = new Size(360, 30);
+        // 
+        // pnlInputWrapper
+        // 
         pnlInputWrapper.BackColor = Color.White;
+        pnlInputWrapper.Controls.Add(txtInput);
+        pnlInputWrapper.Location = new Point(110, 10);
+        pnlInputWrapper.Name = "pnlInputWrapper";
+        pnlInputWrapper.Size = new Size(360, 30);
         pnlInputWrapper.TabIndex = 0;
 
-        txtInput.Dock = DockStyle.None;
+        // 
+        // txtInput
+        // 
         txtInput.BorderStyle = BorderStyle.None;
-        txtInput.Font = new Font("Segoe UI", 10f, FontStyle.Regular);
-        txtInput.PlaceholderText = "e.g. 192.168.1.1-254 or 192.168.1.1";
+        txtInput.Font = new Font("Segoe UI", 10F, FontStyle.Regular);
         txtInput.Location = new Point(10, 5);
-        txtInput.Width = 340;
-        txtInput.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+        txtInput.Name = "txtInput";
+        txtInput.PlaceholderText = "e.g. 192.168.1.1-254 or 192.168.1.1";
+        txtInput.Size = new Size(340, 18);
         txtInput.TabIndex = 0;
-        pnlInputWrapper.Controls.Add(txtInput);
 
+        // 
+        // btnLoadFile
+        // 
         btnLoadFile.Location = new Point(480, 10);
+        btnLoadFile.Name = "btnLoadFile";
         btnLoadFile.Size = new Size(85, 30);
+        btnLoadFile.TabIndex = 1;
         btnLoadFile.Text = "Upload";
         btnLoadFile.UseVisualStyleBackColor = true;
-        btnLoadFile.TabIndex = 1;
         btnLoadFile.Click += btnLoadFile_Click;
 
+        // 
+        // lblTargetInfo
+        // 
+        lblTargetInfo.Font = new Font("Segoe UI", 8.5F, FontStyle.Regular);
         lblTargetInfo.Location = new Point(575, 15);
+        lblTargetInfo.Name = "lblTargetInfo";
         lblTargetInfo.Size = new Size(250, 20);
+        lblTargetInfo.TabIndex = 12;
         lblTargetInfo.TextAlign = ContentAlignment.MiddleLeft;
-        lblTargetInfo.Font = new Font(Font.FontFamily, 8.5f, FontStyle.Regular);
 
-        // Row 2: Action buttons aligned with symmetrical 25px left margin and filter alongside
-        btnStart.Location = new Point(25, 48);
-        btnStart.Size = new Size(90, 30);
-        btnStart.Text = "Start Scan";
+        // 
+        // btnStart
+        // 
         btnStart.BackColor = Color.FromArgb(0, 120, 215);
-        btnStart.ForeColor = Color.White;
         btnStart.FlatStyle = FlatStyle.Flat;
-        btnStart.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
-        btnStart.UseVisualStyleBackColor = false;
+        btnStart.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnStart.ForeColor = Color.White;
+        btnStart.Location = new Point(25, 48);
+        btnStart.Name = "btnStart";
+        btnStart.Size = new Size(90, 30);
         btnStart.TabIndex = 2;
+        btnStart.Text = "Start Scan";
+        btnStart.UseVisualStyleBackColor = false;
         btnStart.Click += btnStart_Click;
 
+        // 
+        // btnCancel
+        // 
         btnCancel.Location = new Point(121, 48);
+        btnCancel.Name = "btnCancel";
         btnCancel.Size = new Size(82, 30);
+        btnCancel.TabIndex = 3;
         btnCancel.Text = "Stop (Esc)";
         btnCancel.UseVisualStyleBackColor = true;
-        btnCancel.TabIndex = 3;
         btnCancel.Click += btnCancel_Click;
 
+        // 
+        // btnSettings
+        // 
         btnSettings.Location = new Point(209, 48);
+        btnSettings.Name = "btnSettings";
         btnSettings.Size = new Size(75, 30);
+        btnSettings.TabIndex = 4;
         btnSettings.Text = "Settings";
         btnSettings.UseVisualStyleBackColor = true;
-        btnSettings.TabIndex = 4;
         btnSettings.Click += btnSettings_Click;
 
+        // 
+        // btnExport
+        // 
         btnExport.Location = new Point(290, 48);
+        btnExport.Name = "btnExport";
         btnExport.Size = new Size(78, 30);
+        btnExport.TabIndex = 5;
         btnExport.Text = "Export...";
         btnExport.UseVisualStyleBackColor = true;
-        btnExport.TabIndex = 5;
         btnExport.Click += btnExport_Click;
 
+        // 
+        // btnAbout
+        // 
         btnAbout.Location = new Point(374, 48);
+        btnAbout.Name = "btnAbout";
         btnAbout.Size = new Size(68, 30);
+        btnAbout.TabIndex = 6;
         btnAbout.Text = "About";
         btnAbout.UseVisualStyleBackColor = true;
-        btnAbout.TabIndex = 6;
         btnAbout.Click += btnAbout_Click;
 
+        // 
+        // btnShortcut
+        // 
         btnShortcut.Location = new Point(448, 48);
+        btnShortcut.Name = "btnShortcut";
         btnShortcut.Size = new Size(75, 30);
-        btnShortcut.Text = "Shortcut";
-        btnShortcut.UseVisualStyleBackColor = true;
         btnShortcut.TabIndex = 7;
-        btnShortcut.Click += btnShortcut_Click;
+        btnShortcut.Text = "Shortcut";
         toolTip.SetToolTip(btnShortcut, "Create a Desktop shortcut");
+        btnShortcut.UseVisualStyleBackColor = true;
+        btnShortcut.Click += btnShortcut_Click;
 
+        // 
+        // lblFilter
+        // 
+        lblFilter.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         lblFilter.Location = new Point(538, 53);
+        lblFilter.Name = "lblFilter";
         lblFilter.Size = new Size(46, 20);
+        lblFilter.TabIndex = 13;
         lblFilter.Text = "Filter:";
-        lblFilter.Font = new Font(Font.FontFamily, 9f, FontStyle.Bold);
 
-        btnFilterAll.Location = new Point(586, 48);
-        btnFilterAll.Size = new Size(58, 30);
-        btnFilterAll.Text = "All";
+        // 
+        // btnFilterAll
+        // 
         btnFilterAll.FlatStyle = FlatStyle.Flat;
-        btnFilterAll.UseVisualStyleBackColor = true;
+        btnFilterAll.Location = new Point(586, 48);
+        btnFilterAll.Name = "btnFilterAll";
+        btnFilterAll.Size = new Size(58, 30);
         btnFilterAll.TabIndex = 8;
-        btnFilterAll.Click += (s, e) => SetFilterMode(ResultFilterMode.Both);
+        btnFilterAll.Text = "All";
+        btnFilterAll.UseVisualStyleBackColor = true;
+        btnFilterAll.Click += btnFilterAll_Click;
 
-        btnFilterOnline.Location = new Point(650, 48);
-        btnFilterOnline.Size = new Size(68, 30);
-        btnFilterOnline.Text = "Online";
+        // 
+        // btnFilterOnline
+        // 
         btnFilterOnline.FlatStyle = FlatStyle.Flat;
-        btnFilterOnline.UseVisualStyleBackColor = true;
+        btnFilterOnline.Location = new Point(650, 48);
+        btnFilterOnline.Name = "btnFilterOnline";
+        btnFilterOnline.Size = new Size(68, 30);
         btnFilterOnline.TabIndex = 9;
-        btnFilterOnline.Click += (s, e) => SetFilterMode(ResultFilterMode.Online);
+        btnFilterOnline.Text = "Online";
+        btnFilterOnline.UseVisualStyleBackColor = true;
+        btnFilterOnline.Click += btnFilterOnline_Click;
 
-        btnFilterOffline.Location = new Point(724, 48);
-        btnFilterOffline.Size = new Size(68, 30);
-        btnFilterOffline.Text = "Offline";
+        // 
+        // btnFilterOffline
+        // 
         btnFilterOffline.FlatStyle = FlatStyle.Flat;
-        btnFilterOffline.UseVisualStyleBackColor = true;
+        btnFilterOffline.Location = new Point(724, 48);
+        btnFilterOffline.Name = "btnFilterOffline";
+        btnFilterOffline.Size = new Size(68, 30);
         btnFilterOffline.TabIndex = 10;
-        btnFilterOffline.Click += (s, e) => SetFilterMode(ResultFilterMode.Offline);
-
-        pnlTop.Controls.AddRange(new Control[] {
-            lblInputHeader, pnlInputWrapper, btnLoadFile, lblTargetInfo,
-            btnStart, btnCancel, btnSettings, btnExport, btnAbout, btnShortcut,
-            lblFilter, btnFilterAll, btnFilterOnline, btnFilterOffline
-        });
+        btnFilterOffline.Text = "Offline";
+        btnFilterOffline.UseVisualStyleBackColor = true;
+        btnFilterOffline.Click += btnFilterOffline_Click;
 
         // 
-        // pnlGridContainer (Provides balanced 25px margin on both sides of table)
+        // pnlGridContainer
         // 
-        pnlGridContainer.Dock = DockStyle.Fill;
-        pnlGridContainer.Padding = new Padding(25, 2, 25, 8);
         pnlGridContainer.BackColor = SystemColors.Control;
+        pnlGridContainer.Controls.Add(gridResults);
+        pnlGridContainer.Dock = DockStyle.Fill;
+        pnlGridContainer.Location = new Point(0, 88);
+        pnlGridContainer.Name = "pnlGridContainer";
+        pnlGridContainer.Padding = new Padding(25, 2, 25, 8);
+        pnlGridContainer.Size = new Size(960, 450);
         pnlGridContainer.TabIndex = 1;
 
         // 
         // gridResults
         // 
-        gridResults.Dock = DockStyle.Fill;
         gridResults.BackgroundColor = Color.White;
         gridResults.BorderStyle = BorderStyle.FixedSingle;
+        gridResults.Dock = DockStyle.Fill;
         gridResults.GridColor = Color.FromArgb(230, 230, 230);
+        gridResults.Location = new Point(25, 2);
+        gridResults.Name = "gridResults";
+        gridResults.Size = new Size(910, 440);
         gridResults.TabIndex = 0;
-        pnlGridContainer.Controls.Add(gridResults);
 
         // 
         // statusStrip
         // 
-        statusStrip.Items.AddRange(new ToolStripItem[] {
-            lblStatus, progressBar, lblElapsed, lblVersionStrip
-        });
+        statusStrip.Items.Add(lblStatus);
+        statusStrip.Items.Add(progressBar);
+        statusStrip.Items.Add(lblElapsed);
+        statusStrip.Items.Add(lblVersionStrip);
+        statusStrip.Location = new Point(0, 538);
+        statusStrip.Name = "statusStrip";
+        statusStrip.Size = new Size(960, 22);
+        statusStrip.TabIndex = 2;
 
+        // 
+        // lblStatus
+        // 
+        lblStatus.Name = "lblStatus";
+        lblStatus.Size = new Size(630, 17);
         lblStatus.Spring = true;
         lblStatus.TextAlign = ContentAlignment.MiddleLeft;
 
+        // 
+        // progressBar
+        // 
+        progressBar.Name = "progressBar";
         progressBar.Size = new Size(160, 16);
         progressBar.Style = ProgressBarStyle.Continuous;
 
+        // 
+        // lblElapsed
+        // 
+        lblElapsed.Name = "lblElapsed";
         lblElapsed.Size = new Size(95, 17);
-        lblElapsed.TextAlign = ContentAlignment.MiddleRight;
         lblElapsed.Text = "Elapsed: 00:00";
+        lblElapsed.TextAlign = ContentAlignment.MiddleRight;
 
-        lblVersionStrip.Size = new Size(60, 17);
-        lblVersionStrip.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // lblVersionStrip
+        // 
         lblVersionStrip.ForeColor = Color.DarkSlateGray;
+        lblVersionStrip.Name = "lblVersionStrip";
+        lblVersionStrip.Size = new Size(60, 17);
         lblVersionStrip.Text = "v1.1.0";
+        lblVersionStrip.TextAlign = ContentAlignment.MiddleRight;
 
         // 
-        // Context Menu (Only contains IP actions)
+        // contextMenu
         // 
+        contextMenu.ImageScalingSize = new Size(16, 16);
+        contextMenu.Items.Add(menuHttp);
+        contextMenu.Items.Add(menuHttps);
+        contextMenu.Items.Add(menuVnc);
+        contextMenu.Items.Add(menuExplorer);
+        contextMenu.Items.Add(sep1);
+        contextMenu.Items.Add(menuCopyIp);
+        contextMenu.Items.Add(menuCopyMac);
+        contextMenu.Items.Add(menuCopyRow);
+        contextMenu.Name = "contextMenu";
+        contextMenu.Size = new Size(235, 164);
         contextMenu.Opening += ContextMenu_Opening;
-        menuHttp.Click += menuHttp_Click;
-        menuHttps.Click += menuHttps_Click;
-        menuVnc.Click += menuVnc_Click;
-        menuExplorer.Click += menuExplorer_Click;
-        menuCopyIp.Click += menuCopyIp_Click;
-        menuCopyMac.Click += menuCopyMac_Click;
-        menuCopyRow.Click += menuCopyRow_Click;
 
-        contextMenu.Items.AddRange(new ToolStripItem[] {
-            menuHttp,
-            menuHttps,
-            menuVnc,
-            menuExplorer,
-            sep1,
-            menuCopyIp,
-            menuCopyMac,
-            menuCopyRow
-        });
+        // 
+        // menuHttp
+        // 
+        menuHttp.Name = "menuHttp";
+        menuHttp.Size = new Size(234, 22);
+        menuHttp.Text = "Open HTTP (http://<IP>)";
+        menuHttp.Click += menuHttp_Click;
+
+        // 
+        // menuHttps
+        // 
+        menuHttps.Name = "menuHttps";
+        menuHttps.Size = new Size(234, 22);
+        menuHttps.Text = "Open HTTPS (https://<IP>)";
+        menuHttps.Click += menuHttps_Click;
+
+        // 
+        // menuVnc
+        // 
+        menuVnc.Name = "menuVnc";
+        menuVnc.Size = new Size(234, 22);
+        menuVnc.Text = "Launch VNC Viewer";
+        menuVnc.Click += menuVnc_Click;
+
+        // 
+        // menuExplorer
+        // 
+        menuExplorer.Name = "menuExplorer";
+        menuExplorer.Size = new Size(234, 22);
+        menuExplorer.Text = "Open Shared Folders (\\\\<IP>\\)";
+        menuExplorer.Click += menuExplorer_Click;
+
+        // 
+        // sep1
+        // 
+        sep1.Name = "sep1";
+        sep1.Size = new Size(231, 6);
+
+        // 
+        // menuCopyIp
+        // 
+        menuCopyIp.Name = "menuCopyIp";
+        menuCopyIp.Size = new Size(234, 22);
+        menuCopyIp.Text = "Copy IP Address";
+        menuCopyIp.Click += menuCopyIp_Click;
+
+        // 
+        // menuCopyMac
+        // 
+        menuCopyMac.Name = "menuCopyMac";
+        menuCopyMac.Size = new Size(234, 22);
+        menuCopyMac.Text = "Copy MAC Address";
+        menuCopyMac.Click += menuCopyMac_Click;
+
+        // 
+        // menuCopyRow
+        // 
+        menuCopyRow.Name = "menuCopyRow";
+        menuCopyRow.Size = new Size(234, 22);
+        menuCopyRow.Text = "Copy Row Details";
+        menuCopyRow.Click += menuCopyRow_Click;
 
         // 
         // MainForm
         // 
+        AcceptButton = btnStart;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(960, 560);
-        MinimumSize = new Size(820, 420);
-        StartPosition = FormStartPosition.CenterScreen;
-        Text = "IPScan - Standalone Network IP Scanner";
-        AcceptButton = btnStart;
         CancelButton = btnCancel;
-        KeyPreview = true;
-
+        ClientSize = new Size(960, 560);
         Controls.Add(pnlGridContainer);
         Controls.Add(pnlTop);
         Controls.Add(statusStrip);
+        KeyPreview = true;
+        MinimumSize = new Size(820, 420);
+        Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "IPScan - Standalone Network IP Scanner";
+        pnlTop.ResumeLayout(false);
+        pnlInputWrapper.ResumeLayout(false);
+        pnlInputWrapper.PerformLayout();
+        pnlGridContainer.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)gridResults).EndInit();
+        statusStrip.ResumeLayout(false);
+        statusStrip.PerformLayout();
+        contextMenu.ResumeLayout(false);
+        ResumeLayout(false);
+        PerformLayout();
     }
 }

@@ -92,6 +92,12 @@ public partial class MainForm : Form
         RefreshFilteredView();
     }
 
+    private void btnFilterAll_Click(object? sender, EventArgs e) => SetFilterMode(ResultFilterMode.Both);
+
+    private void btnFilterOnline_Click(object? sender, EventArgs e) => SetFilterMode(ResultFilterMode.Online);
+
+    private void btnFilterOffline_Click(object? sender, EventArgs e) => SetFilterMode(ResultFilterMode.Offline);
+
     private void UpdateFilterButtonStyles()
     {
         ApplyFilterButtonStyle(btnFilterAll, _currentFilterMode == ResultFilterMode.Both);
