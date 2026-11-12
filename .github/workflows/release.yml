@@ -1,0 +1,105 @@
+name: Build and Publish IPScan Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.2.2). Defaults to IPScan.csproj Version.'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Resolve release version
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $ver = "${{ github.ref_name }}".TrimStart('v', 'V')
+          } elseif (-not [string]::IsNullOrWhiteSpace("${{ inputs.version }}")) {
+            $ver = "${{ inputs.version }}".Trim().TrimStart('v', 'V')
+          } else {
+            [xml]$csproj = Get-Content "IPScan.csproj"
+            $ver = ($csproj.Project.PropertyGroup.Version | Select-Object -First 1).Trim()
+          }
+
+          if ($ver -notmatch '^\d+\.\d+\.\d+$') {
+            throw "Invalid semantic version '$ver'. Expected Major.Minor.Patch (e.g., 1.2.2)."
+          }
+
+          $tag = "v$ver"
+          echo "version=$ver" >> $env:GITHUB_OUTPUT
+          echo "assembly_version=$ver.0" >> $env:GITHUB_OUTPUT
+          echo "tag=$tag" >> $env:GITHUB_OUTPUT
+          Write-Host "Resolved release version: $ver (tag: $tag)"
+
+      - name: Restore dependencies
+        run: dotnet restore IPScan.sln
+
+      - name: Run unit tests
+        run: dotnet test tests/IPScan.Tests/IPScan.Tests.csproj -c Release --no-restore
+
+      - name: Publish Lightweight (Framework-Dependent) single-file executable
+        run: >
+          dotnet publish IPScan.csproj
+          /p:PublishProfile=FolderProfile-FrameworkDependent
+          /p:Version=${{ steps.version.outputs.version }}
+          /p:AssemblyVersion=${{ steps.version.outputs.assembly_version }}
+          /p:FileVersion=${{ steps.version.outputs.assembly_version }}
+          "/p:InformationalVersion=${{ steps.version.outputs.version }} (Release Build)"
+
+      - name: Publish Standalone (Self-Contained) single-file executable
+        run: >
+          dotnet publish IPScan.csproj
+          /p:PublishProfile=FolderProfile-SelfContained
+          /p:Version=${{ steps.version.outputs.version }}
+          /p:AssemblyVersion=${{ steps.version.outputs.assembly_version }}
+          /p:FileVersion=${{ steps.version.outputs.assembly_version }}
+          "/p:InformationalVersion=${{ steps.version.outputs.version }} (Release Build)"
+
+      - name: Prepare release assets and SHA-256 checksums
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "release-assets" | Out-Null
+
+          Copy-Item "publish\framework-dependent\IPScan.exe" "release-assets\IPScan-win-x64-lite.exe" -Force
+          Copy-Item "publish\self-contained\IPScan.exe" "release-assets\IPScan-win-x64-standalone.exe" -Force
+
+          $files = @("IPScan-win-x64-lite.exe", "IPScan-win-x64-standalone.exe")
+          $lines = foreach ($f in $files) {
+            $hash = (Get-FileHash -Path "release-assets\$f" -Algorithm SHA256).Hash.ToLowerInvariant()
+            "$hash  $f"
+          }
+          $lines | Out-File -FilePath "release-assets\SHA256SUMS.txt" -Encoding ascii
+          Get-Content "release-assets\SHA256SUMS.txt"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: IPScan ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+          files: |
+            release-assets/IPScan-win-x64-lite.exe
+            release-assets/IPScan-win-x64-standalone.exe
+            release-assets/SHA256SUMS.txt
+

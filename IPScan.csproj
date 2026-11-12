@@ -22,6 +22,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyMetadata Include="IPScanBuildFlavor" Value="lite" Condition="'$(SelfContained)' == 'false'" />
+    <AssemblyMetadata Include="IPScanBuildFlavor" Value="standalone" Condition="'$(SelfContained)' == 'true'" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="app.ico" />
     <Content Include="app.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

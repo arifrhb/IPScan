@@ -6,6 +6,7 @@ using IPScan.Services.Export;
 using IPScan.Services.External;
 using IPScan.Services.Input;
 using IPScan.Services.Scanning;
+using IPScan.Services.Updates;
 
 namespace IPScan.UI;
 
@@ -13,10 +14,14 @@ public partial class MainForm : Form
 {
     private readonly ScanOptions _options = new();
     private readonly NetworkScanner _scanner = new();
+    private readonly UpdateService _updateService = new();
     private readonly List<ScanResult> _allResults = new();
     private readonly BindingList<ScanResult> _visibleResults = new();
 
     private CancellationTokenSource? _scanCts;
+    private CancellationTokenSource? _startupUpdateCts;
+    private UpdateInfo? _availableUpdate;
+    private bool _checkingForUpdate;
     private readonly Stopwatch _stopwatch = new();
     private System.Windows.Forms.Timer? _elapsedTimer;
 
@@ -134,6 +139,19 @@ public partial class MainForm : Form
 
         var ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         lblVersionStrip.Text = ver != null ? $"v{ver.Major}.{ver.Minor}.{ver.Build}" : "v1.2.1";
+
+        pnlUpdateBanner.Paint += (s, pe) =>
+        {
+            using var borderPen = new Pen(Color.FromArgb(147, 197, 253));
+            pe.Graphics.DrawLine(borderPen, 0, pnlUpdateBanner.Height - 1, pnlUpdateBanner.Width, pnlUpdateBanner.Height - 1);
+        };
+        Shown += MainForm_Shown;
+        FormClosed += (s, e) =>
+        {
+            _startupUpdateCts?.Cancel();
+            _startupUpdateCts?.Dispose();
+            _updateService.Dispose();
+        };
 
         ActiveControl = txtInput;
 
@@ -675,8 +693,109 @@ public partial class MainForm : Form
 
     private void btnAbout_Click(object? sender, EventArgs e)
     {
-        using var aboutDialog = new AboutDialog();
+        using var aboutDialog = new AboutDialog(_updateService);
         aboutDialog.ShowDialog(this);
+        if (aboutDialog.UpdateApplied)
+        {
+            Application.Exit();
+        }
+    }
+
+    private async void MainForm_Shown(object? sender, EventArgs e)
+    {
+        await CheckForUpdatesAsync(silent: true);
+    }
+
+    private async Task CheckForUpdatesAsync(bool silent)
+    {
+        if (_checkingForUpdate) return;
+        _checkingForUpdate = true;
+
+        try
+        {
+            _startupUpdateCts?.Cancel();
+            _startupUpdateCts?.Dispose();
+            _startupUpdateCts = new CancellationTokenSource();
+
+            var update = await _updateService.CheckForUpdateAsync(cancellationToken: _startupUpdateCts.Token);
+            if (IsDisposed || !IsHandleCreated) return;
+
+            if (update != null && update.IsUpdateAvailable)
+            {
+                ShowUpdateNotification(update);
+            }
+            else if (!silent)
+            {
+                string currentVer = UpdateService.GetCurrentVersionString();
+                string msg = update == null
+                    ? $"No published release was found on GitHub yet.\nYou are running v{currentVer}."
+                    : $"You are running the latest version of IPScan (v{update.CurrentVersion}).";
+                MessageBox.Show(this, msg, "Check for Updates", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Form closing or superseded check
+        }
+        catch (Exception ex)
+        {
+            if (!silent && !IsDisposed)
+            {
+                MessageBox.Show(
+                    this,
+                    $"Unable to check for updates right now:\n\n{ex.Message}",
+                    "Update Check Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+        }
+        finally
+        {
+            _checkingForUpdate = false;
+        }
+    }
+
+    private void ShowUpdateNotification(UpdateInfo update)
+    {
+        _availableUpdate = update;
+        lblUpdateBanner.Text = $"Update available: IPScan v{update.LatestVersion} is ready (installed: v{update.CurrentVersion}) — {update.FormattedAssetSize}";
+        pnlUpdateBanner.Visible = true;
+
+        lblVersionStrip.Text = $"v{update.CurrentVersion} (Update v{update.LatestVersion}!)";
+        lblVersionStrip.LinkColor = Color.FromArgb(0, 102, 204);
+        lblVersionStrip.ToolTipText = $"IPScan v{update.LatestVersion} is available. Click to update.";
+    }
+
+    private void OpenUpdateDialog(bool autoStartDownload)
+    {
+        if (_availableUpdate == null) return;
+
+        using var updateDialog = new UpdateDialog(_availableUpdate, _updateService, autoStartDownload);
+        updateDialog.ShowDialog(this);
+        if (updateDialog.UpdateApplied)
+        {
+            Application.Exit();
+        }
+    }
+
+    private void btnUpdateNow_Click(object? sender, EventArgs e) => OpenUpdateDialog(autoStartDownload: true);
+
+    private void btnUpdateDetails_Click(object? sender, EventArgs e) => OpenUpdateDialog(autoStartDownload: false);
+
+    private void btnDismissUpdate_Click(object? sender, EventArgs e)
+    {
+        pnlUpdateBanner.Visible = false;
+    }
+
+    private async void lblVersionStrip_Click(object? sender, EventArgs e)
+    {
+        if (_availableUpdate != null && _availableUpdate.IsUpdateAvailable)
+        {
+            OpenUpdateDialog(autoStartDownload: false);
+            return;
+        }
+
+        await CheckForUpdatesAsync(silent: false);
     }
 
     private List<ScanResult> GetCurrentFilteredResults()

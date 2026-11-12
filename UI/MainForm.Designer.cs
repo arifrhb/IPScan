@@ -26,6 +26,11 @@ partial class MainForm
     private ToolStripProgressBar progressBar = null!;
     private ToolStripStatusLabel lblElapsed = null!;
     private ToolStripStatusLabel lblVersionStrip = null!;
+    private Panel pnlUpdateBanner = null!;
+    private Label lblUpdateBanner = null!;
+    private Button btnUpdateNow = null!;
+    private Button btnUpdateDetails = null!;
+    private Button btnDismissUpdate = null!;
     private ContextMenuStrip contextMenu = null!;
     private ToolStripMenuItem menuHttp = null!;
     private ToolStripMenuItem menuHttps = null!;
@@ -73,6 +78,11 @@ partial class MainForm
         progressBar = new ToolStripProgressBar();
         lblElapsed = new ToolStripStatusLabel();
         lblVersionStrip = new ToolStripStatusLabel();
+        pnlUpdateBanner = new Panel();
+        lblUpdateBanner = new Label();
+        btnUpdateNow = new Button();
+        btnUpdateDetails = new Button();
+        btnDismissUpdate = new Button();
         contextMenu = new ContextMenuStrip(components);
         menuHttp = new ToolStripMenuItem();
         menuHttps = new ToolStripMenuItem();
@@ -86,6 +96,7 @@ partial class MainForm
         pnlTop.SuspendLayout();
         pnlInputWrapper.SuspendLayout();
         pnlGridContainer.SuspendLayout();
+        pnlUpdateBanner.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)gridResults).BeginInit();
         statusStrip.SuspendLayout();
         contextMenu.SuspendLayout();
@@ -348,10 +359,89 @@ partial class MainForm
         // lblVersionStrip
         // 
         lblVersionStrip.ForeColor = Color.DarkSlateGray;
+        lblVersionStrip.IsLink = true;
+        lblVersionStrip.LinkBehavior = LinkBehavior.HoverUnderline;
+        lblVersionStrip.LinkColor = Color.DarkSlateGray;
         lblVersionStrip.Name = "lblVersionStrip";
-        lblVersionStrip.Size = new Size(60, 17);
-        lblVersionStrip.Text = "v1.1.0";
+        lblVersionStrip.Size = new Size(80, 17);
+        lblVersionStrip.Text = "v1.2.1";
         lblVersionStrip.TextAlign = ContentAlignment.MiddleRight;
+        lblVersionStrip.ToolTipText = "Click to check for updates";
+        lblVersionStrip.Click += lblVersionStrip_Click;
+
+        // 
+        // pnlUpdateBanner
+        // 
+        pnlUpdateBanner.BackColor = Color.FromArgb(232, 244, 253);
+        pnlUpdateBanner.Controls.Add(lblUpdateBanner);
+        pnlUpdateBanner.Controls.Add(btnUpdateNow);
+        pnlUpdateBanner.Controls.Add(btnUpdateDetails);
+        pnlUpdateBanner.Controls.Add(btnDismissUpdate);
+        pnlUpdateBanner.Dock = DockStyle.Top;
+        pnlUpdateBanner.Location = new Point(0, 88);
+        pnlUpdateBanner.Name = "pnlUpdateBanner";
+        pnlUpdateBanner.Padding = new Padding(25, 6, 25, 6);
+        pnlUpdateBanner.Size = new Size(960, 40);
+        pnlUpdateBanner.TabIndex = 3;
+        pnlUpdateBanner.Visible = false;
+
+        // 
+        // lblUpdateBanner
+        // 
+        lblUpdateBanner.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        lblUpdateBanner.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        lblUpdateBanner.ForeColor = Color.FromArgb(12, 74, 110);
+        lblUpdateBanner.Location = new Point(25, 6);
+        lblUpdateBanner.Name = "lblUpdateBanner";
+        lblUpdateBanner.Size = new Size(640, 28);
+        lblUpdateBanner.TabIndex = 0;
+        lblUpdateBanner.Text = "A new version of IPScan is available.";
+        lblUpdateBanner.TextAlign = ContentAlignment.MiddleLeft;
+
+        // 
+        // btnUpdateNow
+        // 
+        btnUpdateNow.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnUpdateNow.BackColor = Color.FromArgb(0, 120, 215);
+        btnUpdateNow.FlatStyle = FlatStyle.Flat;
+        btnUpdateNow.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+        btnUpdateNow.ForeColor = Color.White;
+        btnUpdateNow.Location = new Point(710, 6);
+        btnUpdateNow.Name = "btnUpdateNow";
+        btnUpdateNow.Size = new Size(92, 28);
+        btnUpdateNow.TabIndex = 1;
+        btnUpdateNow.Text = "Update";
+        btnUpdateNow.UseVisualStyleBackColor = false;
+        btnUpdateNow.Click += btnUpdateNow_Click;
+
+        // 
+        // btnUpdateDetails
+        // 
+        btnUpdateDetails.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnUpdateDetails.Location = new Point(808, 6);
+        btnUpdateDetails.Name = "btnUpdateDetails";
+        btnUpdateDetails.Size = new Size(92, 28);
+        btnUpdateDetails.TabIndex = 2;
+        btnUpdateDetails.Text = "Release Notes";
+        btnUpdateDetails.UseVisualStyleBackColor = true;
+        btnUpdateDetails.Click += btnUpdateDetails_Click;
+
+        // 
+        // btnDismissUpdate
+        // 
+        btnDismissUpdate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnDismissUpdate.FlatAppearance.BorderSize = 0;
+        btnDismissUpdate.FlatStyle = FlatStyle.Flat;
+        btnDismissUpdate.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnDismissUpdate.ForeColor = Color.FromArgb(71, 85, 105);
+        btnDismissUpdate.Location = new Point(906, 6);
+        btnDismissUpdate.Name = "btnDismissUpdate";
+        btnDismissUpdate.Size = new Size(28, 28);
+        btnDismissUpdate.TabIndex = 3;
+        btnDismissUpdate.Text = "×";
+        toolTip.SetToolTip(btnDismissUpdate, "Dismiss update notification");
+        btnDismissUpdate.UseVisualStyleBackColor = true;
+        btnDismissUpdate.Click += btnDismissUpdate_Click;
 
         // 
         // contextMenu
@@ -440,6 +530,7 @@ partial class MainForm
         CancelButton = btnCancel;
         ClientSize = new Size(960, 560);
         Controls.Add(pnlGridContainer);
+        Controls.Add(pnlUpdateBanner);
         Controls.Add(pnlTop);
         Controls.Add(statusStrip);
         KeyPreview = true;
@@ -451,6 +542,7 @@ partial class MainForm
         pnlInputWrapper.ResumeLayout(false);
         pnlInputWrapper.PerformLayout();
         pnlGridContainer.ResumeLayout(false);
+        pnlUpdateBanner.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)gridResults).EndInit();
         statusStrip.ResumeLayout(false);
         statusStrip.PerformLayout();
