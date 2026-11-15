@@ -12,7 +12,6 @@ partial class AboutDialog
     private Label lblDescription = null!;
     private Label lblDisclaimer = null!;
     private LinkLabel lnkGitHub = null!;
-    private Button btnCheckUpdate = null!;
     private Button btnClose = null!;
 
     protected override void Dispose(bool disposing)
@@ -35,7 +34,6 @@ partial class AboutDialog
         lblDescription = new Label();
         lblDisclaimer = new Label();
         lnkGitHub = new LinkLabel();
-        btnCheckUpdate = new Button();
         btnClose = new Button();
         pnlHeader = new Panel();
         pnlDivider = new Panel();
@@ -121,28 +119,18 @@ partial class AboutDialog
         // 
         lnkGitHub.Location = new Point(25, 270);
         lnkGitHub.Name = "lnkGitHub";
-        lnkGitHub.Size = new Size(165, 22);
+        lnkGitHub.Size = new Size(314, 22);
         lnkGitHub.TabIndex = 7;
         lnkGitHub.TabStop = true;
-        lnkGitHub.Text = "GitHub Releases";
+        lnkGitHub.Text = "Github";
         lnkGitHub.LinkClicked += lnkGitHub_LinkClicked;
-        // 
-        // btnCheckUpdate
-        // 
-        btnCheckUpdate.Location = new Point(200, 265);
-        btnCheckUpdate.Name = "btnCheckUpdate";
-        btnCheckUpdate.Size = new Size(138, 30);
-        btnCheckUpdate.TabIndex = 8;
-        btnCheckUpdate.Text = "Check for Updates";
-        btnCheckUpdate.UseVisualStyleBackColor = true;
-        btnCheckUpdate.Click += btnCheckUpdate_Click;
         // 
         // btnClose
         // 
         btnClose.Location = new Point(345, 265);
         btnClose.Name = "btnClose";
         btnClose.Size = new Size(90, 30);
-        btnClose.TabIndex = 9;
+        btnClose.TabIndex = 8;
         btnClose.Text = "Close";
         btnClose.UseVisualStyleBackColor = true;
         btnClose.Click += btnClose_Click;
@@ -182,7 +170,6 @@ partial class AboutDialog
         Controls.Add(lblDescription);
         Controls.Add(lblDisclaimer);
         Controls.Add(lnkGitHub);
-        Controls.Add(btnCheckUpdate);
         Controls.Add(btnClose);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
@@ -198,4 +185,3 @@ partial class AboutDialog
     private Panel pnlHeader;
     private Panel pnlDivider;
 }
-
